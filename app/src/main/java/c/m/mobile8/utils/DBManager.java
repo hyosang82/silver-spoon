@@ -9,6 +9,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -311,6 +312,36 @@ public class DBManager {
             if(MConstants.isDEBUG)
                 Log.i(TAG, "getMemoList() end");
         }
+        return result;
+    }
+    //TODO update Content by memo_id and sequence
+    public boolean updateContentByMemoIdAndSeq(Memo memo, MemoContent memoContent) {
+        boolean result = false;
+        SQLiteDatabase sqlDB = null;
+
+        try {
+            sqlDB = dbHelper.openReadWriteDataBase();
+            //memo update
+            ContentValues updateValues = new ContentValues();
+            Date date = new Date();
+            updateValues.put("update_date", date.getTime());
+            String[] memoWhereArgs = { "" + memo.getId() };
+            sqlDB.update("memo_tbl", updateValues, "memo_id=?", memoWhereArgs);
+            //memo content update
+            ContentValues updateMemoContentValues = new ContentValues();
+            updateMemoContentValues.put("content", memoContent.getContent());
+            updateMemoContentValues.put("content_type", memoContent.getContentType().ordinal());
+            String[] memoContentWhereArgs = { "" + memoContent.getMemo_id(), "" + memoContent.getSequence() };
+            sqlDB.update("memo_content_tbl", updateMemoContentValues,"memo_id=? AND sequence=?", memoContentWhereArgs);
+            result = true;
+        } catch (SQLiteException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (sqlDB != null) {
+                sqlDB.close();
+            }
+        }
+
         return result;
     }
 }
