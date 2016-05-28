@@ -139,6 +139,10 @@ public class MemoListActivity extends AppCompatActivity {
                     content += memoContent.getContent();
                 } else if(memoContent.getContentType() == ContentType.CONTENT_TYPE_IMAGE) {
                     content += " (사진) ";
+                } else if(memoContent.getContentType() == ContentType.CONTENT_TYPE_AUDIO) {
+                    content += " (음성) ";
+                } else if(memoContent.getContentType() == ContentType.CONTENT_TYPE_VIDIO) {
+                    content += " (영상) ";
                 }
             }
 
