@@ -135,11 +135,11 @@ public class DBManager {
             try {
                 if(isOrderUpdateDate) {
                     query = "SELECT id,created_date, update_date, theme " +
-                            "FROM memo_tbl" +
+                            "FROM memo_tbl " +
                             "ORDER BY update_date desc;";
                 } else {
                     query = "SELECT id,created_date, update_date, theme " +
-                            "FROM memo_tbl" +
+                            "FROM memo_tbl " +
                             "ORDER BY created_date desc;";
                 }
                 cursor = sqlDB.rawQuery(query, null);
