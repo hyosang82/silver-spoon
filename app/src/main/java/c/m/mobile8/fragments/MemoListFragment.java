@@ -80,13 +80,11 @@ public class MemoListFragment extends Fragment {
                         searchClick();
                         break;
                     default:
-                        //Toast.makeText(getApplicationContext(), "기본", Toast.LENGTH_LONG).show();
                         return false;
                 }
                 return true;
             }
         });
-
 
         imageViewSearch = (ImageView)rootView.findViewById(R.id.imageViewSearch);
         imageViewSearch.setOnClickListener(new View.OnClickListener() {
