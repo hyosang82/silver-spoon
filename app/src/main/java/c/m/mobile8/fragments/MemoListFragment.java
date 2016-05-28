@@ -32,7 +32,6 @@ public class MemoListFragment extends Fragment {
     MemoListViewAdapter memoListViewAdapter;
     List<Memo> memoList;
 
-
     boolean isSelectMode = false;
     boolean[] isSelected;
 
@@ -48,14 +47,13 @@ public class MemoListFragment extends Fragment {
 
         /*
         Date date = new Date();
-        Memo memo = new Memo(1, date.getTime(), date.getTime());
-        memo.addMemoContent(new MemoContent(0, 1, "test1", ContentType.CONTENT_TYPE_VIDIO));
-        memo.addMemoContent(new MemoContent(1, 1, "test2", ContentType.CONTENT_TYPE_IMAGE));
+        Memo memo = new Memo(2, date.getTime(), date.getTime());
+        memo.addMemoContent(new MemoContent(0, 2, "test1", ContentType.CONTENT_TYPE_TEXT));
+        memo.addMemoContent(new MemoContent(1, 2, "test2", ContentType.CONTENT_TYPE_IMAGE));
         DBManager.getInstance(getActivity().getApplicationContext()).insertMemo(memo);
         */
 
         memoList = DBManager.getInstance(getActivity().getApplicationContext()).getMemoList();
-        Log.i(TAG, "" + memoList.size());
 
         listViewMemoList = (ListView)rootView.findViewById(R.id.listViewMemoList);
         memoListViewAdapter = new MemoListViewAdapter(getActivity().getApplicationContext(), memoList);
@@ -76,7 +74,6 @@ public class MemoListFragment extends Fragment {
         listViewMemoList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.e(TAG, "long click " + position);
                 if(!isSelectMode) {
                     isSelectMode = true;
                     isSelected = new boolean[memoList.size()];
@@ -87,6 +84,24 @@ public class MemoListFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        isSelectMode = false;
+        memoList = DBManager.getInstance(getActivity().getApplicationContext()).getMemoList();
+        memoListViewAdapter = new MemoListViewAdapter(getActivity().getApplicationContext(), memoList);
+        listViewMemoList.setAdapter(memoListViewAdapter);
+    }
+
+    public boolean getIsSelectMode() {
+        return isSelectMode;
+    }
+    public void setIsSelectMode(boolean isSelectMode) {
+        this.isSelectMode = isSelectMode;
+        isSelected = new boolean[memoList.size()];
+        memoListViewAdapter.setSelected(isSelected);
     }
 
     @Override
