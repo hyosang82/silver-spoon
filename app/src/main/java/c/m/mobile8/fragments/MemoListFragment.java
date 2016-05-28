@@ -45,6 +45,7 @@ public class MemoListFragment extends Fragment {
         listViewMemoList = (ListView)rootView.findViewById(R.id.listViewMemoList);
 
         List<Memo> memoList = ((MainActivity)getActivity()).mMemoList;
+        reloadData();
         setTextNoMemo(memoList.size());
 
         if(memoListViewAdapter == null) {
