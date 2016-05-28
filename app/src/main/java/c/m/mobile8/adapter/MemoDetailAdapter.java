@@ -85,4 +85,22 @@ public class MemoDetailAdapter extends RecyclerView.Adapter<ViewHolderBase> {
     public int getItemCount() {
         return mList.size();
     }
+
+    public List<MemoContent> getAllList() {
+        return mList;
+    }
+
+    public boolean isEmpty() {
+        if(mList.size() == 1) {
+            if(mList.get(0).getContent().length() == 0) {
+                return true;
+            }
+        }else if(mList.size() == 0) {
+            return true;
+        }else {
+            return false;
+        }
+
+        return false;
+    }
 }

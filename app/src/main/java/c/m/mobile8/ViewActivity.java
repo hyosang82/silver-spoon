@@ -12,6 +12,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -19,8 +21,10 @@ import java.io.InputStream;
 import c.m.mobile8.adapter.MemoDetailAdapter;
 import c.m.mobile8.dialog.DialogBase;
 import c.m.mobile8.dialog.NewMemoItemDialog;
+import c.m.mobile8.models.Memo;
 import c.m.mobile8.models.MemoContent;
 import c.m.mobile8.models.enums.ContentType;
+import c.m.mobile8.utils.DBManager;
 
 public class ViewActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_PICK_PHOTO = 0x01;
@@ -46,6 +50,9 @@ public class ViewActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("View/Edit Memo");
 
+        findViewById(R.id.btn_cancel).setOnClickListener(mButtonListener);
+        findViewById(R.id.btn_save).setOnClickListener(mButtonListener);
+
         findViewById(R.id.btn_memo_item_add).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,20 +62,13 @@ public class ViewActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-        ///////////////////////////////////
-        MemoContent item = new MemoContent(0, 1, "This is first memo snippet.", ContentType.CONTENT_TYPE_TEXT);
-        mAdapter.addItem(item);
-
-        item = new MemoContent(1, 2, "This is second memo snipper", ContentType.CONTENT_TYPE_TEXT);
-        mAdapter.addItem(item);
-
-        mAdapter.notifyDataSetChanged();
-        ////////////////////////////////////////
-
-
+        int memoId = getIntent().getIntExtra(EXTRA_MEMO_ID, -1);
+        if(memoId < 0) {
+            //new memo
+            mAdapter.addItem(new MemoContent(-1, -1, "", ContentType.CONTENT_TYPE_TEXT));
+        }else {
+            //load
+        }
     }
 
     private DialogBase.IDialogListener mNewMemoItemDialogListener = new DialogBase.IDialogListener() {
@@ -113,4 +113,56 @@ public class ViewActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void saveAndExit() {
+        Memo memo = new Memo();
+
+        for(MemoContent m : mAdapter.getAllList()) {
+            memo.addMemoContent(m);
+        }
+
+        DBManager db = DBManager.getInstance(this);
+        db.insertMemo(memo);
+
+        finish();
+    }
+
+    private void updateDataRecursive(View v) {
+        if(v instanceof ViewGroup) {
+            ViewGroup vg = (ViewGroup) v;
+            int cnt = vg.getChildCount();
+            for(int i=0;i<cnt;i++) {
+                updateDataRecursive(vg.getChildAt(i));
+            }
+        }else {
+            if(v instanceof EditText) {
+                Object tag = v.getTag();
+                if(tag instanceof MemoContent) {
+                    MemoContent memo = (MemoContent) tag;
+                    memo.setContent(((EditText) v).getText().toString());
+
+                    Log.d("TEST", "UPDATED :::: " + memo.getContent());
+                }
+            }
+        }
+    }
+
+    private View.OnClickListener mButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(v.getId() == R.id.btn_cancel) {
+                //cancel
+            }else if(v.getId() == R.id.btn_save) {
+                //save and exit
+                updateDataRecursive(mMemoView);
+
+                if(mAdapter.isEmpty()) {
+                    Snackbar snack = Snackbar.make(v, "메모가 작성되지 않았습니다.", Snackbar.LENGTH_SHORT);
+                    snack.show();
+                }else {
+                    saveAndExit();
+                }
+            }
+        }
+    };
 }
