@@ -24,17 +24,20 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import c.m.mobile8.models.Memo;
 import c.m.mobile8.models.MemoContent;
 import c.m.mobile8.models.enums.ContentType;
 import c.m.mobile8.utils.DBManager;
+import c.m.mobile8.models.MemoContent;
 
 public class MemoListActivity extends AppCompatActivity {
     private final String TAG = "MemoListActivity";
@@ -43,8 +46,6 @@ public class MemoListActivity extends AppCompatActivity {
     ListView listViewMemoList;
     MemoListViewAdapter memoListViewAdapter;
     List<Memo> memoList;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,26 +95,6 @@ public class MemoListActivity extends AppCompatActivity {
             });
         }
     }
-    public void initDataBase() {
-        DBManager dbManager = DBManager.getInstance(this);
-        dbManager.CreateDataBase();
-    }
-    public void testCode() {
-        Date date = new Date();
-        Memo memo = new Memo(-1, date.getTime(), date.getTime());
-        memo.addMemoContent(new MemoContent(0, -1, "test1", ContentType.CONTENT_TYPE_TEXT));
-        DBManager.getInstance(getApplicationContext()).insertMemo(memo);
-        memo.addMemoContent(new MemoContent(1, -1, "test2", ContentType.CONTENT_TYPE_TEXT));
-        DBManager.getInstance(getApplicationContext()).insertMemo(memo);
-        //List<Memo> memoList = DBManager.getInstance(getApplicationContext()).getMemoList();
-        //Set<Integer> set = memoList.get(0).getMemoContents().keySet();
-        //Iterator<Integer> iter = set.iterator();
-        //while (iter.hasNext()) {
-            //MemoContent memoContent = memoList.get(0).getMemoContents().get(iter.next());
-            //Log.i(TAG, "sequence : " + memoContent.getSequence() + ", memo_id : " + memoContent.getMemo_id() + ", content : " + memoContent.getContent() + ", contentType : " + memoContent.getContentType().name());
-        //}
-        //DBManager.getInstance(this).deleteMemo(memo.getId());
-    }
 
     private class MemoListViewAdapter extends BaseAdapter {
         private Context context;
@@ -137,19 +118,38 @@ public class MemoListActivity extends AppCompatActivity {
                 LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.memo_list_item, null);
                 holder.textViewMemoTitle = (TextView)convertView.findViewById(R.id.textViewMemoTitle);
+                holder.textViewUpdateDate = (TextView)convertView.findViewById(R.id.textViewUpdateDate);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder)convertView.getTag();
             }
             Memo memo = memoList.get(position);
-            String str = memo.getMemoContents().get(position).getContent();
-            holder.textViewMemoTitle.setText(str);
-            holder.textViewMemoTitle.setTextColor(Color.BLACK);
+
+            SimpleDateFormat formatter = new SimpleDateFormat ( "yy/MM/dd HH:mm", Locale.KOREA );
+            Date currentTime = new Date();
+            currentTime.setTime(memo.getUpdateDate());
+            String updateDate = formatter.format ( currentTime );
+
+             //CONTENT_TYPE_TEXT
+            Iterator<Integer> iter = memo.getMemoContents().keySet().iterator();
+            String content = "";
+            while (iter.hasNext()) {
+                MemoContent memoContent = memo.getMemoContents().get(iter.next());
+                if(memoContent.getContentType() == ContentType.CONTENT_TYPE_TEXT) {
+                    content += memoContent.getContent();
+                } else if(memoContent.getContentType() == ContentType.CONTENT_TYPE_IMAGE) {
+                    content += " (사진) ";
+                }
+            }
+
+            holder.textViewUpdateDate.setText(updateDate);
+            holder.textViewMemoTitle.setText(content);
 
             return convertView;
         }
     }
     private class ViewHolder {
+        public TextView textViewUpdateDate;
         public TextView textViewMemoTitle;
     }
 
