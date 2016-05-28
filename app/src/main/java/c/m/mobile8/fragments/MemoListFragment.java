@@ -12,6 +12,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import java.util.List;
+
+import c.m.mobile8.MainActivity;
 import c.m.mobile8.R;
 import c.m.mobile8.ViewActivity;
 import c.m.mobile8.adapter.MemoListViewAdapter;
@@ -28,7 +30,6 @@ public class MemoListFragment extends Fragment {
 
     private ListView listViewMemoList;
     private MemoListViewAdapter memoListViewAdapter;
-    private List<Memo> memoList;
     private TextView textViewNoMemo;
 
     public MemoListFragment() {
@@ -40,7 +41,7 @@ public class MemoListFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_memo_list, container, false);
         textViewNoMemo = (TextView)rootView.findViewById(R.id.textViewNoMemo);
-        memoList = DBManager.getInstance(getActivity().getApplicationContext()).getMemoList();
+        List<Memo> memoList = ((MainActivity)getActivity()).mMemoList;
         setTextNoMemo(memoList.size());
 
         listViewMemoList = (ListView)rootView.findViewById(R.id.listViewMemoList);
@@ -50,6 +51,7 @@ public class MemoListFragment extends Fragment {
         listViewMemoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                List<Memo> memoList = ((MainActivity)getActivity()).mMemoList;
                 enterDetailView(memoList.get(position).getId());
             }
         });
@@ -61,6 +63,7 @@ public class MemoListFragment extends Fragment {
                         .setTitle("삭제")
                         .setPositiveButton("확인",new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                List<Memo> memoList = ((MainActivity)getActivity()).mMemoList;
                                 DBManager.getInstance(getActivity().getApplicationContext()).deleteMemo(memoList.get(position).getId());
                                 reloadData();
                             }
@@ -79,19 +82,18 @@ public class MemoListFragment extends Fragment {
         });
         return rootView;
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        reloadData();
-    }
-
     public void reloadData() {
-        memoList = DBManager.getInstance(getActivity().getApplicationContext()).getMemoList();
+        List<Memo> memoList = ((MainActivity)getActivity()).mMemoList;
         setTextNoMemo(memoList.size());
         memoListViewAdapter = new MemoListViewAdapter(getActivity().getApplicationContext(), memoList);
         listViewMemoList.setAdapter(memoListViewAdapter);
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+
     private void setTextNoMemo(int size) {
         if(size == 0) {
             textViewNoMemo.setText("표시할 메모가 없습니다.");

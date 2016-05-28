@@ -102,4 +102,8 @@ public class MemoListViewAdapter extends BaseAdapter {
         public ImageView imageViewContainAudio;
         public ImageView imageViewContainVideo;
     }
+
+    public void setMemoList(List<Memo> _memoList) {
+        memoList = _memoList;
+    }
 }

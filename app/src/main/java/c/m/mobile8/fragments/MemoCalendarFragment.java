@@ -51,7 +51,7 @@ public class MemoCalendarFragment extends Fragment {
 
         mCalendar = (CompactCalendarView) rootView.findViewById(R.id.calendar_view);
         if(mMemoListViewAdapter == null) {
-
+            mMemoListViewAdapter = new MemoListViewAdapter(getActivity(), new ArrayList<Memo>());
         }
         mTextView = (TextView) rootView.findViewById(R.id.calendar_month_textview);
         initCalendar();
@@ -81,7 +81,9 @@ public class MemoCalendarFragment extends Fragment {
                     for (Event event : eventList) {
                         memoList.add((Memo) event.getData());
                     }
+
                     if(mMemoListViewAdapter != null)
+                        mMemoListViewAdapter.setMemoList(memoList);
                         mMemoListViewAdapter.notifyDataSetChanged();
                 }
             }
@@ -93,5 +95,7 @@ public class MemoCalendarFragment extends Fragment {
         });
 
     }
+    public void reloadData() {
 
+    }
 }

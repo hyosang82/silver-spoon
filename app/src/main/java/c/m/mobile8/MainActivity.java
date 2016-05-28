@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import c.m.mobile8.adapter.MemoListViewAdapter;
 import c.m.mobile8.fragments.ConfigFragment;
 import c.m.mobile8.fragments.MemoCalendarFragment;
 import c.m.mobile8.fragments.MemoListFragment;
@@ -92,6 +93,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        reloadData();
+    }
+    public void reloadData() {
+        mMemoList = DBManager.getInstance(this).getMemoList();
+        switch(mCurrentState) {
+            case STATE_LIST:
+                mMemoListFragment.reloadData();
+                break;
+            case STATE_CALENDAR:
+                mMemoCalendarFragment.reloadData();
+                break;
+        }
     }
 
     private void enterDetailView(int memoId) {
