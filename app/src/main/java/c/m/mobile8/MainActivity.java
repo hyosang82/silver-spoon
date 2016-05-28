@@ -171,21 +171,21 @@ public class MainActivity extends AppCompatActivity {
         mIsConfigFragment = false;
         mFab.show();
     }
-    public void dbtestCode() {
-        Date date = new Date();
-        Memo memo = new Memo(-1, date.getTime(), date.getTime());
-        memo.addMemoContent(new MemoContent(0, -1, "test1", ContentType.CONTENT_TYPE_TEXT));
-        memo.addMemoContent(new MemoContent(1, -1, "test2", ContentType.CONTENT_TYPE_TEXT));
-        DBManager.getInstance(getApplicationContext()).insertMemo(memo);
-        List<Memo> memoList = DBManager.getInstance(getApplicationContext()).getMemoList();
-        Set<Integer> set = memoList.get(0).getMemoContents().keySet();
-        Iterator<Integer> iter = set.iterator();
-        while (iter.hasNext()) {
-            MemoContent memoContent = memoList.get(0).getMemoContents().get(iter.next());
-            Log.i(TAG, "sequence : " + memoContent.getSequence() + ", memo_id : " + memoContent.getMemo_id() + ", content : " + memoContent.getContent() + ", contentType : " + memoContent.getContentType().name());
-        }
-        DBManager.getInstance(this).deleteMemo(memo.getId());
-    }
+//    public void dbtestCode() {
+//        Date date = new Date();
+//        Memo memo = new Memo(-1, date.getTime(), date.getTime());
+//        memo.addMemoContent(new MemoContent(0, -1, "test1", ContentType.CONTENT_TYPE_TEXT));
+//        memo.addMemoContent(new MemoContent(1, -1, "test2", ContentType.CONTENT_TYPE_TEXT));
+//        DBManager.getInstance(getApplicationContext()).insertMemo(memo);
+//        List<Memo> memoList = DBManager.getInstance(getApplicationContext()).getMemoList();
+//        Set<Integer> set = memoList.get(0).getMemoContents().keySet();
+//        Iterator<Integer> iter = set.iterator();
+//        while (iter.hasNext()) {
+//            MemoContent memoContent = memoList.get(0).getMemoContents().get(iter.next());
+//            Log.i(TAG, "sequence : " + memoContent.getSequence() + ", memo_id : " + memoContent.getMemo_id() + ", content : " + memoContent.getContent() + ", contentType : " + memoContent.getContentType().name());
+//        }
+//        DBManager.getInstance(this).deleteMemo(memo.getId());
+//    }
 
     //implements Back key pressed
     @Override
