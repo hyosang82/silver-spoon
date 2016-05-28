@@ -200,9 +200,12 @@ public class DBManager {
                 result = true;
                 //TODO: Insert MemoContents
                 Set<Integer> set = memo.getMemoContents().keySet();
+                int tmpSeq = 0;
                 Iterator<Integer> iter = set.iterator();
                 while (iter.hasNext()) {
                     MemoContent memoContent = memo.getMemoContents().get(iter.next());
+                    memoContent.setSequence(tmpSeq);
+                    tmpSeq++;
                     insertValues = new ContentValues();
                     insertValues.put("sequence", memoContent.getSequence());
                     insertValues.put("memo_id", rowId);
@@ -344,4 +347,5 @@ public class DBManager {
 
         return result;
     }
+
 }
