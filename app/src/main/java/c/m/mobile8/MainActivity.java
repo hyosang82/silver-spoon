@@ -37,6 +37,7 @@ import c.m.mobile8.models.Memo;
 import c.m.mobile8.models.MemoContent;
 import c.m.mobile8.models.enums.ContentType;
 import c.m.mobile8.utils.DBManager;
+import c.m.mobile8.utils.SharedPreferenceManager;
 import c.m.mobile8.utils.ThemeUtil;
 
 public class MainActivity extends AppCompatActivity {
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mCoordinatorLayout = (CoordinatorLayout)findViewById(R.id.coordinatorLayout);
         initActionBar();
-        mMemoList = DBManager.getInstance(this).getMemoList();
+        refreshData();
         //init memo list fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.activity_main_fragments, mMemoListFragment).commit();
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         reloadData();
     }
     public void reloadData() {
-        mMemoList = DBManager.getInstance(this).getMemoList();
+        refreshData();
         switch(mCurrentState) {
             case STATE_LIST:
                 mMemoListFragment.reloadData();
@@ -111,6 +112,11 @@ public class MainActivity extends AppCompatActivity {
                 mMemoCalendarFragment.reloadData();
                 break;
         }
+    }
+
+    public void refreshData() {
+        int orderType = SharedPreferenceManager.getPreferencesOrder(this);
+        mMemoList = DBManager.getInstance(this).getMemoList(orderType);
     }
 
     private void enterDetailView(int memoId) {
@@ -196,21 +202,6 @@ public class MainActivity extends AppCompatActivity {
         mIsConfigFragment = false;
         mFab.show();
     }
-//    public void dbtestCode() {
-//        Date date = new Date();
-//        Memo memo = new Memo(-1, date.getTime(), date.getTime());
-//        memo.addMemoContent(new MemoContent(0, -1, "test1", ContentType.CONTENT_TYPE_TEXT));
-//        memo.addMemoContent(new MemoContent(1, -1, "test2", ContentType.CONTENT_TYPE_TEXT));
-//        DBManager.getInstance(getApplicationContext()).insertMemo(memo);
-//        List<Memo> memoList = DBManager.getInstance(getApplicationContext()).getMemoList();
-//        Set<Integer> set = memoList.get(0).getMemoContents().keySet();
-//        Iterator<Integer> iter = set.iterator();
-//        while (iter.hasNext()) {
-//            MemoContent memoContent = memoList.get(0).getMemoContents().get(iter.next());
-//            Log.i(TAG, "sequence : " + memoContent.getSequence() + ", memo_id : " + memoContent.getMemo_id() + ", content : " + memoContent.getContent() + ", contentType : " + memoContent.getContentType().name());
-//        }
-//        DBManager.getInstance(this).deleteMemo(memo.getId());
-//    }
 
     //implements Back key pressed
     @Override
@@ -269,6 +260,10 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(ThemeUtil.getSystemColor(this, midasTheme));
         }
         mFab.setBackgroundTintList(ColorStateList.valueOf(ThemeUtil.getSystemColor(this, ThemeUtil.getTheme(this))));
+    }
+
+    public void setOrderType(int orderType) {
+        refreshData();
     }
 
 }
