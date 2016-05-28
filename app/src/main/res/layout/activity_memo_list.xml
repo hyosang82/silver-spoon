@@ -3,4 +3,13 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/listViewMemoList"
+        android:divider="#ffffff"
+        android:dividerHeight="1dp"
+        android:choiceMode="singleChoice"
+        android:listSelector="@color/colorAccent"/>
 </RelativeLayout>
