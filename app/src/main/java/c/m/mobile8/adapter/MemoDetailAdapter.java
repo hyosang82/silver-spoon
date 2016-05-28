@@ -90,10 +90,10 @@ public class MemoDetailAdapter extends RecyclerView.Adapter<ViewHolderBase> {
     }
 
     public void setData(Memo memo) {
-        Map<Integer, MemoContent> conts = new TreeMap<>(memo.getMemoContents());
+        List<MemoContent> conts = memo.getMemoContents();
 
-        for(Map.Entry<Integer, MemoContent> entry : conts.entrySet()) {
-            mList.add(entry.getValue());
+        for(MemoContent m : conts) {
+            mList.add(m);
         }
     }
 
