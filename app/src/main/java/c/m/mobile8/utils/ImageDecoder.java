@@ -138,6 +138,7 @@ public class ImageDecoder extends Thread {
             if(msg.what == MSG_SET_BITMAP) {
                 DecoderInfo info = (DecoderInfo) msg.obj;
                 info.targetView.setImageBitmap(info.bitmap);
+                info.targetView.setTag(info.location);
                 info.bitmap = null;
             }
         }

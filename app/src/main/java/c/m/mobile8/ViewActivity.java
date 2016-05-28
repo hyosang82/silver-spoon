@@ -352,6 +352,14 @@ public class ViewActivity extends AppCompatActivity {
                     }).create().show();
 
         }
+
+        @Override
+        public void onImageClicked(String location) {
+            Intent i = new Intent(ViewActivity.this, FullImageActivity.class);
+            i.putExtra(FullImageActivity.EXTRA_IMAGE_LOCATION, location);
+            startActivity(i);
+        }
+
     };
 
     private class SaveTask extends AsyncTask<Void, Void, Boolean> {

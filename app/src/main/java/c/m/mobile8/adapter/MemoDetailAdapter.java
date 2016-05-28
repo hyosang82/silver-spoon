@@ -1,6 +1,7 @@
 package c.m.mobile8.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ public class MemoDetailAdapter extends RecyclerView.Adapter<ViewHolderBase> {
 
     public static interface IMemoViewListener {
         public void onDelete(int position);
+        public void onImageClicked(String location);
     }
 
     @Override
@@ -74,6 +76,9 @@ public class MemoDetailAdapter extends RecyclerView.Adapter<ViewHolderBase> {
         try {
             ViewHolderBase vh = (ViewHolderBase) vhClass.getConstructor(View.class, View.class).newInstance(mainView, contView);
             vh.mBtnDelete = btnDelete;
+            if(vh instanceof MemoImageViewHolder) {
+                ((MemoImageViewHolder) vh).setListener(mImageListener);
+            }
             return vh;
         }catch(Exception e) {
             e.printStackTrace();
@@ -152,4 +157,13 @@ public class MemoDetailAdapter extends RecyclerView.Adapter<ViewHolderBase> {
 
         return false;
     }
+
+    private MemoImageViewHolder.IImageMemoListener mImageListener = new MemoImageViewHolder.IImageMemoListener() {
+        @Override
+        public void onImageClicked(String location) {
+            if(mListener != null) {
+                mListener.onImageClicked(location);
+            }
+        }
+    };
 }
