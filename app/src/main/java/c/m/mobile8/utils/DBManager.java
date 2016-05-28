@@ -353,8 +353,31 @@ public class DBManager {
         return result;
     }
 
-    //TODO: Update Memo
+    //TODO: Update Memo Theme
+    public boolean updateTheme(int memoId, ThemeUtil.MIDAS_THEME theme) {
+        boolean result = false;
+        SQLiteDatabase sqlDB = null;
 
+        try {
+            sqlDB = dbHelper.openReadWriteDataBase();
+
+            ContentValues updateValues = new ContentValues();
+
+            updateValues.put("theme", theme.ordinal());
+
+            String[] whereArgs = { "" + memoId };
+            sqlDB.update("memo_tbl", updateValues, "id=?", whereArgs);
+            result = true;
+        } catch (SQLiteException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (sqlDB != null) {
+                sqlDB.close();
+            }
+        }
+
+        return result;
+    }
 
     //TODO: searchMemo
     public List<Memo> searchMemo(String word) {
