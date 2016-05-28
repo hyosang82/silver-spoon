@@ -88,7 +88,7 @@ public class ViewActivity extends AppCompatActivity {
         findViewById(R.id.btn_save).setOnClickListener(mButtonListener);
 
         mBtnAdd = (FloatingActionButton) findViewById(R.id.btn_memo_item_add);
-
+        mBtnAdd.setImageResource(R.drawable.icon_fab_plus);
         mBtnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
