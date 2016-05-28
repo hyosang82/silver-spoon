@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -57,6 +58,8 @@ public class MemoListViewAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.memo_list_item, null);
             holder.textViewMemoTitle = (TextView)convertView.findViewById(R.id.textViewMemoTitle);
             holder.textViewUpdateDate = (TextView)convertView.findViewById(R.id.textViewUpdateDate);
+            holder.imageViewContainImage = (ImageView) convertView.findViewById(R.id.imageViewContainImage);
+
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder)convertView.getTag();
@@ -71,34 +74,33 @@ public class MemoListViewAdapter extends BaseAdapter {
         //CONTENT_TYPE_TEXT
         Iterator<MemoContent> iter = memo.getMemoContents().iterator();
         String content = "";
+        boolean isContainImage = false;
         while (iter.hasNext()) {
             MemoContent memoContent = iter.next();
             if(memoContent.getContentType() == ContentType.CONTENT_TYPE_TEXT) {
-                //if(memoContent.getContent().contains("\n")) content += memoContent.getContent().substring(0, memoContent.getContent().indexOf("\n"));
                 content += memoContent.getContent();
-
             } else if(memoContent.getContentType() == ContentType.CONTENT_TYPE_IMAGE) {
-                content += " (사진) ";
+                //content += " (사진) ";
+                isContainImage = true;
             } else if(memoContent.getContentType() == ContentType.CONTENT_TYPE_AUDIO) {
-                content += " (음성) ";
+                //content += " (음성) ";
             } else if(memoContent.getContentType() == ContentType.CONTENT_TYPE_VIDIO) {
-                content += " (영상) ";
+                //content += " (영상) ";
             }
         }
 
-        if(isSelected[position]) {
-            convertView.setBackgroundColor(ThemeUtil.getMainColor(context, ThemeUtil.getTheme(context)));
 
-        } else {
-            convertView.setBackground(null);
-        }
         holder.textViewUpdateDate.setText(updateDate);
-        holder.textViewMemoTitle.setText(content);
+        if(!content.equals("")) holder.textViewMemoTitle.setText(content);
+        else holder.textViewMemoTitle.setText("텍스트 없음");
+        if(isContainImage) holder.imageViewContainImage.setVisibility(View.VISIBLE);
+        else holder.imageViewContainImage.setVisibility(View.GONE);
 
         return convertView;
     }
     private class ViewHolder {
         public TextView textViewUpdateDate;
         public TextView textViewMemoTitle;
+        public ImageView imageViewContainImage;
     }
 }
