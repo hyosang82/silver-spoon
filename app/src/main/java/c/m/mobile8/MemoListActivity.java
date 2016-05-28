@@ -25,7 +25,15 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
+import c.m.mobile8.models.Memo;
+import c.m.mobile8.models.MemoContent;
+import c.m.mobile8.models.enums.ContentType;
+import c.m.mobile8.utils.DBManager;
 
 public class MemoListActivity extends AppCompatActivity {
     private final String TAG = "MemoListActivity";
@@ -33,7 +41,9 @@ public class MemoListActivity extends AppCompatActivity {
 
     ListView listViewMemoList;
     MemoListViewAdapter memoListViewAdapter;
-    List<String> memoItem;
+    List<Memo> memoList;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +51,8 @@ public class MemoListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_memo_list);
         mCoordinatorLayout = (CoordinatorLayout)findViewById(R.id.coordinatorLayout);
 
-        memoItem = new ArrayList<>();
-        memoItem.add("memo1");
-        memoItem.add("memo2");
-        memoItem.add("memo3");
-        memoItem.add("memo4");
+        memoList = DBManager.getInstance(getApplicationContext()).getMemoList();
+        Log.i(TAG, "" + memoList.size());
 
         listViewMemoList = (ListView)findViewById(R.id.listViewMemoList);
         memoListViewAdapter = new MemoListViewAdapter(getApplicationContext());
@@ -55,7 +62,7 @@ public class MemoListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //open memo
-                Log.e(TAG, "click " + position);
+                Log.e(TAG, "click: " + memoList.get(position).getId() + " " + memoList.get(position).getCreatedDate() + " " +  memoList.get(position).getUpdateDate() + " " +  memoList.get(position).getMemoContents());
             }
         });
         listViewMemoList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -85,6 +92,26 @@ public class MemoListActivity extends AppCompatActivity {
             });
         }
     }
+    public void initDataBase() {
+        DBManager dbManager = DBManager.getInstance(this);
+        dbManager.CreateDataBase();
+    }
+    public void testCode() {
+        Date date = new Date();
+        Memo memo = new Memo(-1, date.getTime(), date.getTime());
+        memo.addMemoContent(new MemoContent(0, -1, "test1", ContentType.CONTENT_TYPE_TEXT));
+        DBManager.getInstance(getApplicationContext()).insertMemo(memo);
+        memo.addMemoContent(new MemoContent(1, -1, "test2", ContentType.CONTENT_TYPE_TEXT));
+        DBManager.getInstance(getApplicationContext()).insertMemo(memo);
+        //List<Memo> memoList = DBManager.getInstance(getApplicationContext()).getMemoList();
+        //Set<Integer> set = memoList.get(0).getMemoContents().keySet();
+        //Iterator<Integer> iter = set.iterator();
+        //while (iter.hasNext()) {
+            //MemoContent memoContent = memoList.get(0).getMemoContents().get(iter.next());
+            //Log.i(TAG, "sequence : " + memoContent.getSequence() + ", memo_id : " + memoContent.getMemo_id() + ", content : " + memoContent.getContent() + ", contentType : " + memoContent.getContentType().name());
+        //}
+        //DBManager.getInstance(this).deleteMemo(memo.getId());
+    }
 
     private class MemoListViewAdapter extends BaseAdapter {
         private Context context;
@@ -94,7 +121,7 @@ public class MemoListActivity extends AppCompatActivity {
         }
 
         @Override
-        public int getCount() {return memoItem.size();}
+        public int getCount() {return memoList.size();}
         @Override
         public Object getItem(int position) {return position;}
         @Override
@@ -107,12 +134,13 @@ public class MemoListActivity extends AppCompatActivity {
                 holder = new ViewHolder();
                 LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.memo_list_item, null);
-                holder.textViewMemoTitle = (TextView) convertView.findViewById(R.id.textViewMemoTitle);
+                holder.textViewMemoTitle = (TextView)convertView.findViewById(R.id.textViewMemoTitle);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder)convertView.getTag();
             }
-            String str = memoItem.get(position);
+            Memo memo = memoList.get(position);
+            String str = memo.getMemoContents().get(position).getContent();
             holder.textViewMemoTitle.setText(str);
             holder.textViewMemoTitle.setTextColor(Color.BLACK);
 
