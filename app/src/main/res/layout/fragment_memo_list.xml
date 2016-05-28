@@ -9,7 +9,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <TextView
             android:layout_width="match_parent"
@@ -41,37 +43,42 @@
                 android:src="@drawable/icon_search" />
         </RelativeLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textViewNoSearch"
-            android:textColor="#555555"
-            android:gravity="center_horizontal"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/layoutSearch" />
-
-        <ListView
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/listViewMemoList"
-            android:divider="#ffffff"
-            android:dividerHeight="1dp"
-            android:choiceMode="singleChoice"
-            android:layout_marginBottom="1dp"
-            android:layout_below="@+id/layoutSearch" />
+            android:layout_below="@+id/layoutSearch">
 
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/listVIewSearchList"
-            android:divider="#ffffff"
-            android:dividerHeight="1dp"
-            android:choiceMode="singleChoice"
-            android:layout_marginBottom="1dp"
-            android:layout_below="@+id/layoutSearch"
-            android:visibility="invisible"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewNoSearch"
+                android:textColor="#555555"
+                android:gravity="center_horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_centerHorizontal="true" />
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/listVIewSearchList"
+                android:divider="#ffffff"
+                android:dividerHeight="1dp"
+                android:choiceMode="singleChoice"
+                android:layout_marginBottom="1dp"
+                android:visibility="invisible"
+                android:layout_below="@+id/textViewNoSearch" />
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/listViewMemoList"
+                android:divider="#ffffff"
+                android:dividerHeight="1dp"
+                android:choiceMode="singleChoice"
+                android:layout_marginBottom="1dp" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

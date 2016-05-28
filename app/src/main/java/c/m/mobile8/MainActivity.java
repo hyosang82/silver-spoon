@@ -210,6 +210,8 @@ public class MainActivity extends AppCompatActivity {
             switchFragmentConfigToDefault();
         } else if(mCurrentState == STATE_CALENDAR) {
             switchFragmentCalendarToList();
+        } else if(mMemoListFragment.getSearchtMode()) {
+            mMemoListFragment.setSearchMode(false);
         } else {
             exitApp();
         }
