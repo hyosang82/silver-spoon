@@ -65,6 +65,7 @@ public class ViewActivity extends AppCompatActivity {
         mMemoView.setLayoutManager(new LinearLayoutManager(this));
 
         mAdapter = new MemoDetailAdapter();
+        mAdapter.setListener(mMemoListener);
         mMemoView.setAdapter(mAdapter);
 
         getSupportActionBar().setTitle("View/Edit Memo");
@@ -227,6 +228,25 @@ public class ViewActivity extends AppCompatActivity {
                     startSave();
                 }
             }
+        }
+    };
+
+    private MemoDetailAdapter.IMemoViewListener mMemoListener = new MemoDetailAdapter.IMemoViewListener() {
+        @Override
+        public void onDelete(int position) {
+            Log.d("TEST", "DELETE : " + position);
+
+            final int delPosition = position;
+
+            (new AlertDialog.Builder(ViewActivity.this)).setMessage("메모 항목을 삭제합니다.")
+                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mAdapter.removeItem(delPosition);
+                            mAdapter.notifyItemRemoved(delPosition);
+                        }
+                    }).create().show();
+
         }
     };
 
