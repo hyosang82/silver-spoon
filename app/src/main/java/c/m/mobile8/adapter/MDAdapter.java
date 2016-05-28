@@ -100,34 +100,7 @@ public class MDAdapter extends BaseAdapter {
             MemoContent memoContent = (MemoContent)getItem(position);
             textHolder.memo_text.setText(memoContent.getContent());
             textHolder.memo_text.setTag(position);
-            textHolder.memo_text.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-
-                }
-            });
-            textHolder.memo_text.setOnKeyListener(new View.OnKeyListener() {
-                @Override
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    if(v.getTag() instanceof Integer) {
-                        int position = (Integer)v.getTag();
-                        EditText editText = (EditText)v;
-                        memo.getMemoContents().get(position).setContent(editText.getText().toString());
-                    }
-
-                    return false;
-                }
-            });
         } else if(viewType == ContentType.CONTENT_TYPE_IMAGE.ordinal()) {
             //TODO : image list인 경우
             String contentImagePath = ((MemoContent)getItem(position)).getContent();

@@ -218,7 +218,7 @@ public class MemoListFragment extends Fragment {
     }
 
     private void enterDetailView(int memoId) {
-        Intent i = new Intent(getActivity(), MemoDetailActivity.class);
+        Intent i = new Intent(getActivity(), ViewActivity.class);
         i.putExtra(ViewActivity.EXTRA_MEMO_ID, memoId);
         startActivity(i);
     }
