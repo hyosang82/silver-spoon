@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     private MemoListFragment mMemoListFragment = new MemoListFragment();
     private ConfigFragment mConfigFragment = new ConfigFragment();
 
+    private Menu mMenu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +102,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
+        mMenu = menu;
+        inflater.inflate(R.menu.menu_main, mMenu);
         return true;
     }
 
@@ -111,20 +114,16 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_list_calendar_changer:
                 if(mCurrentState == STATE_LIST) {
                     //TODO : switch fragment to calendar
-                    item.setIcon(android.R.drawable.ic_menu_agenda);
                     switchFragmentListToCalendar();
                 } else {
                     //TODO : switch fragment to list
-                    item.setIcon(android.R.drawable.ic_menu_my_calendar);
                     switchFragmentCalendarToList();
                 }
                 break;
             case R.id.action_list_config:
                 if(mIsConfigFragment) {
-                    item.setIcon(android.R.drawable.ic_menu_preferences);
                     switchFragmentConfigToDefault();
                 } else {
-                    item.setIcon(android.R.drawable.ic_menu_close_clear_cancel);
                     switchFragmentDefaultToConfig();
                 }
                 break;
@@ -135,20 +134,23 @@ public class MainActivity extends AppCompatActivity {
         //TODO : switch fragment to calendar
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.activity_main_fragments, mMemoCalendarFragment).commit();
-
+        mMenu.getItem(0).setIcon(getResources().getDrawable(android.R.drawable.ic_menu_agenda));
         mCurrentState = STATE_CALENDAR;
+
     }
     public void switchFragmentCalendarToList() {
         //TODO : switch fragment to list
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.activity_main_fragments, mMemoListFragment).commit();
-
+        mMenu.getItem(0).setIcon(getResources().getDrawable(android.R.drawable.ic_menu_my_calendar));
         mCurrentState = STATE_LIST;
+
     }
     public void switchFragmentDefaultToConfig() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.activity_main_fragments, mConfigFragment).commit();
-
+        mMenu.getItem(1).setIcon(getResources().getDrawable(android.R.drawable.ic_menu_close_clear_cancel));
+        mMenu.getItem(0).setVisible(false);
         mIsConfigFragment = true;
     }
     public void switchFragmentConfigToDefault() {
@@ -160,6 +162,8 @@ public class MainActivity extends AppCompatActivity {
                 switchFragmentListToCalendar();
                 break;
         }
+        mMenu.getItem(1).setIcon(getResources().getDrawable(android.R.drawable.ic_menu_preferences));
+        mMenu.getItem(0).setVisible(true);
         mIsConfigFragment = false;
     }
     public void dbtestCode() {
