@@ -217,13 +217,13 @@ public class DBManager {
         return result;
     }
 
-    //TODO: Insert Memo
-    public boolean insertMemo(Memo memo) {
+    //TODO: Update Memo
+    public boolean updateMemo(Memo memo) {
         boolean result = false;
         SQLiteDatabase sqlDB = null;
 
         if(MConstants.isDEBUG)
-            Log.i(TAG, "insertMemo() start");
+            Log.i(TAG, "updateMemo() start");
         try {
             sqlDB = dbHelper.openReadWriteDataBase();
             ContentValues updateValues = new ContentValues();
@@ -262,9 +262,9 @@ public class DBManager {
                     memoContent.setMemo_id((int)rowId);
                     if(MConstants.isDEBUG) {
                         if(rowId == -1)
-                            Log.i(TAG, "insertMemo() > memo_content_tbl failed : " + memoContent.getSequence() + ", " + rowId + ", " + memoContent.getContent() + ",'" + memoContent.getContentType());
+                            Log.i(TAG, "updateMemo() > memo_content_tbl failed : " + memoContent.getSequence() + ", " + rowId + ", " + memoContent.getContent() + ",'" + memoContent.getContentType());
                         else
-                            Log.i(TAG, "insertMemo() > memo_content_tbl success : ");
+                            Log.i(TAG, "updateMemo() > memo_content_tbl success : ");
                     }
                 }
             } else {
@@ -279,8 +279,8 @@ public class DBManager {
         }
         return result;
     }
-    //TODO: Update Memo
-    public boolean updateMemo(Memo memo) {
+    //TODO: Insert Memo
+    public boolean insertMemo(Memo memo) {
         boolean result = false;
         SQLiteDatabase sqlDB = null;
 
@@ -290,11 +290,6 @@ public class DBManager {
             sqlDB = dbHelper.openReadWriteDataBase();
             ContentValues insertValues = new ContentValues();
 
-            String[] whereArgs = { "" + memo.getId() };
-            sqlDB.delete("memo_content_tbl", "memo_id=?", whereArgs);
-            sqlDB.delete("memo_tbl", "id=?", whereArgs);
-
-            insertValues.put("id", memo.getId());
             insertValues.put("created_date", memo.getCreatedDate());
             insertValues.put("update_date", memo.getUpdateDate());
             insertValues.put("theme", memo.getTheme());

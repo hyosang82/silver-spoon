@@ -5,14 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import java.util.List;
 import c.m.mobile8.R;
 import c.m.mobile8.ViewActivity;
@@ -85,7 +83,6 @@ public class MemoListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         reloadData();
     }
 
@@ -97,8 +94,8 @@ public class MemoListFragment extends Fragment {
     }
     private void setTextNoMemo(int size) {
         if(size == 0) {
-            textViewNoMemo.setVisibility(View.VISIBLE);
             textViewNoMemo.setText("표시할 메모가 없습니다.");
+            textViewNoMemo.setVisibility(View.VISIBLE);
         } else {
             textViewNoMemo.setVisibility(View.GONE);
         }
