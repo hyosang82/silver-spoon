@@ -1,8 +1,7 @@
 package c.m.mobile8.models;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.PriorityQueue;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import c.m.mobile8.models.enums.ContentType;
 
@@ -13,13 +12,16 @@ public class Memo {
     private int id;
     private long created_date;
     private long update_date;
-    private HashMap<Integer, MemoContent> memoContents;
+    private Map<Integer, MemoContent> memoContents;
+    public Memo() {
+
+    }
     public Memo(int id, long created_date, long update_date) {
         this.id = id;
         this.created_date = created_date;
         this.update_date = update_date;
     }
-    public Memo(int id, long created_date, long update_date, HashMap<Integer, MemoContent> memoContents) {
+    public Memo(int id, long created_date, long update_date, Map<Integer, MemoContent> memoContents) {
         this.id = id;
         this.created_date = created_date;
         this.update_date = update_date;
@@ -36,9 +38,9 @@ public class Memo {
         return update_date;
     }
 
-    public HashMap<Integer, MemoContent> getMemoContents() {
+    public Map<Integer, MemoContent> getMemoContents() {
         if(memoContents == null) {
-            memoContents = new HashMap<Integer, MemoContent>();
+            memoContents = new LinkedHashMap<Integer, MemoContent>();
         }
         return memoContents;
     }

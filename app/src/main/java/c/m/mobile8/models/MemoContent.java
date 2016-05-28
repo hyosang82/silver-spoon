@@ -13,6 +13,13 @@ public class MemoContent {
     private String content;
     private ContentType contentType;
 
+    public MemoContent(int sequence, int memo_id, String content, ContentType contentType) {
+        this.sequence = sequence;
+        this.memo_id = memo_id;
+        this.content = content;
+        this.contentType = contentType;
+    }
+
     public int getSequence() {
         return sequence;
     }
@@ -46,11 +53,6 @@ public class MemoContent {
     }
 
 
-    public MemoContent(int sequence, int memo_id, String content, ContentType contentType) {
-        this.sequence = sequence;
-        this.memo_id = memo_id;
-        this.content = content;
-        this.contentType = contentType;
-    }
+
 
 }

@@ -150,22 +150,22 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 		myInput.close();
 	}
 
-	public SQLiteDatabase openReadOnlyDataBase(String DB_Name)
+	public SQLiteDatabase openReadOnlyDataBase()
 			throws SQLException {
 
 		// Open the database
-		String myPath = DB_PATH + DB_Name;
+		String myPath = DB_PATH + MConstants.MY_DB_NAME;
 
 		myDataBase = SQLiteDatabase.openDatabase(myPath, null,
 				SQLiteDatabase.OPEN_READWRITE);
 		return myDataBase;
 	}
 
-	public SQLiteDatabase openReadWriteDataBase(String DB_Name)
+	public SQLiteDatabase openReadWriteDataBase()
 			throws SQLException {
 
 		// Open the database
-		String myPath = DB_PATH + DB_Name;
+		String myPath = DB_PATH + MConstants.MY_DB_NAME;
 		myDataBase = SQLiteDatabase.openDatabase(myPath, null,
 				SQLiteDatabase.OPEN_READWRITE);
 		return myDataBase;

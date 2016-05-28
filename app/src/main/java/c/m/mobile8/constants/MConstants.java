@@ -11,6 +11,7 @@ import java.io.File;
  * Created by JunLee on 5/28/16.
  */
 public class MConstants {
+    public static boolean isDEBUG = true;
     // DataBase
 
     public static String getDataBasePath(Context context) {
