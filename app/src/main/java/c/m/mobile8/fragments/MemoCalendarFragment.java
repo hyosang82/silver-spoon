@@ -21,7 +21,6 @@ import c.m.mobile8.R;
  */
 public class MemoCalendarFragment extends Fragment {
 
-
     public MemoCalendarFragment() {
         // Required empty public constructor
     }

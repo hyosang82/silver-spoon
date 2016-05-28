@@ -106,25 +106,30 @@ public class MainActivity extends AppCompatActivity {
                 if(mCurrentState == STATE_LIST) {
                     //TODO : switch fragment to calendar
                     item.setIcon(android.R.drawable.ic_menu_agenda);
-                    //init memo list fragment
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.activity_main_fragments, mMemoCalendarFragment).commit();
-
-                    mCurrentState = STATE_CALENDAR;
+                    switchFragmentListToCalendar();
                 } else {
                     //TODO : switch fragment to list
                     item.setIcon(android.R.drawable.ic_menu_my_calendar);
-                    //init memo list fragment
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.activity_main_fragments, mMemoListFragment).commit();
-
-                    mCurrentState = STATE_LIST;
+                    switchFragmentCalendarToList();
                 }
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
+    public void switchFragmentListToCalendar() {
+        //TODO : switch fragment to calendar
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.activity_main_fragments, mMemoCalendarFragment).commit();
 
+        mCurrentState = STATE_CALENDAR;
+    }
+    public void switchFragmentCalendarToList() {
+        //TODO : switch fragment to list
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.activity_main_fragments, mMemoListFragment).commit();
+
+        mCurrentState = STATE_LIST;
+    }
     public void testCode() {
         Date date = new Date();
         Memo memo = new Memo(-1, date.getTime(), date.getTime());
@@ -144,7 +149,11 @@ public class MainActivity extends AppCompatActivity {
     //implements Back key pressed
     @Override
     public void onBackPressed() {
-        exitApp();
+        if(mCurrentState == STATE_CALENDAR) {
+            switchFragmentCalendarToList();
+        } else {
+            exitApp();
+        }
     }
 
     public void exitApp() {
