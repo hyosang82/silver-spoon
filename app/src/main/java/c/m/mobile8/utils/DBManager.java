@@ -173,12 +173,12 @@ public class DBManager {
                         query = "SELECT sequence, memo_id, content, content_type " +
                                 "FROM memo_content_tbl " +
                                 "WHERE memo_id = " + memo.getId() +
-                                "ORDER BY sequence asc;";
+                                " ORDER BY sequence asc;";
                     } else {
                         query = "SELECT sequence, memo_id, content, content_type " +
                                 "FROM memo_content_tbl " +
                                 "WHERE memo_id = " + memo.getId() +
-                                "ORDER BY sequence asc;";
+                                " ORDER BY sequence asc;";
                     }
                     cursor = sqlDB.rawQuery(query, null);
                     if (cursor.moveToFirst()) {
