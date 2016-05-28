@@ -128,6 +128,7 @@ public class ViewActivity extends AppCompatActivity {
                 if(cont.length() > 10) {
                     idx = cont.indexOf(' ', idx);
                     if(idx > 20) idx = 10;
+                    else if(idx == -1) idx = 10;
 
                     return cont.substring(0, idx);
                 }else {
