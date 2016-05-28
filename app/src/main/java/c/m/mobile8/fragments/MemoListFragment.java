@@ -1,8 +1,11 @@
 package c.m.mobile8.fragments;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +13,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import c.m.mobile8.R;
 import c.m.mobile8.ViewActivity;
 import c.m.mobile8.adapter.MemoListViewAdapter;
+import c.m.mobile8.dialog.DialogBase;
 import c.m.mobile8.models.Memo;
 import c.m.mobile8.models.MemoContent;
 import c.m.mobile8.models.enums.ContentType;
@@ -73,13 +79,32 @@ public class MemoListFragment extends Fragment {
         });
         listViewMemoList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                /*
                 if(!isSelectMode) {
                     isSelectMode = true;
                     isSelected = new boolean[memoList.size()];
                     isSelected[position] = true;
                     memoListViewAdapter.setSelected(isSelected);
-                }
+                }*/
+                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                alertDialogBuilder
+                        .setTitle("삭제")
+                        .setPositiveButton("확인",new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                DBManager.getInstance(getActivity().getApplicationContext()).deleteMemo(memoList.get(position).getId());
+                                reloadData();
+                            }
+                        })
+                    .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+
                 return true;
             }
         });
@@ -89,7 +114,12 @@ public class MemoListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        isSelectMode = false;
+
+        reloadData();
+    }
+
+    public void reloadData() {
+        //isSelectMode = false;
         memoList = DBManager.getInstance(getActivity().getApplicationContext()).getMemoList();
         memoListViewAdapter = new MemoListViewAdapter(getActivity().getApplicationContext(), memoList);
         listViewMemoList.setAdapter(memoListViewAdapter);
@@ -98,6 +128,7 @@ public class MemoListFragment extends Fragment {
     public boolean getIsSelectMode() {
         return isSelectMode;
     }
+
     public void setIsSelectMode(boolean isSelectMode) {
         this.isSelectMode = isSelectMode;
         isSelected = new boolean[memoList.size()];

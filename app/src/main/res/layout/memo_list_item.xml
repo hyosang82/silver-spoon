@@ -17,7 +17,8 @@
             android:layout_alignParentEnd="false"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textSize="12sp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -29,7 +30,20 @@
             android:singleLine="true"
             android:layout_centerVertical="true"
             android:layout_margin="5dp"
-            android:layout_below="@+id/textViewUpdateDate" />
+            android:layout_below="@+id/textViewUpdateDate"
+            android:textSize="20sp"
+            android:layout_toLeftOf="@+id/imageViewContainImage" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageViewContainImage"
+            android:layout_alignTop="@+id/textViewMemoTitle"
+            android:layout_alignBottom="@+id/textViewMemoTitle"
+            android:layout_alignRight="@+id/textViewUpdateDate"
+            android:layout_alignLeft="@+id/textViewUpdateDate"
+            android:scaleType="fitEnd"
+            android:src="@android:drawable/ic_menu_camera" />
 
     </RelativeLayout>
 </RelativeLayout>

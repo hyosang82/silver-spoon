@@ -5,7 +5,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -17,8 +20,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import c.m.mobile8.adapter.MemoDetailAdapter;
 import c.m.mobile8.adapter.MemoTextViewHolder;
@@ -28,6 +37,7 @@ import c.m.mobile8.models.Memo;
 import c.m.mobile8.models.MemoContent;
 import c.m.mobile8.models.enums.ContentType;
 import c.m.mobile8.utils.DBManager;
+import c.m.mobile8.utils.ImageDecoder;
 
 public class ViewActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_PICK_PHOTO = 0x01;
@@ -38,6 +48,7 @@ public class ViewActivity extends AppCompatActivity {
     private MemoDetailAdapter mAdapter;
     private boolean mbUpdated = false;
     private int mMemoId = -1;
+    private SaveTask mSaveTask = null;
 
 
     @Override
@@ -45,12 +56,16 @@ public class ViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view);
 
+        //init
+        ImageDecoder.getInstance().setContext(this);
+
         CoordinatorLayout mainLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
         mMemoView = (RecyclerView) findViewById(R.id.memo_view);
         mMemoView.setHasFixedSize(true);
         mMemoView.setLayoutManager(new LinearLayoutManager(this));
 
         mAdapter = new MemoDetailAdapter();
+        mAdapter.setListener(mMemoListener);
         mMemoView.setAdapter(mAdapter);
 
         getSupportActionBar().setTitle("View/Edit Memo");
@@ -122,6 +137,16 @@ public class ViewActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void startSave() {
+        if(mSaveTask != null) {
+            Snackbar.make(mMemoView, "저장중입니다", Snackbar.LENGTH_SHORT).show();
+        }else {
+            mSaveTask = new SaveTask();
+            mSaveTask.execute();
+        }
+    }
+
 
     private void saveAndExit() {
         Memo memo = new Memo();
@@ -200,9 +225,110 @@ public class ViewActivity extends AppCompatActivity {
                     Snackbar snack = Snackbar.make(v, "메모가 작성되지 않았습니다.", Snackbar.LENGTH_SHORT);
                     snack.show();
                 }else {
-                    saveAndExit();
+                    startSave();
                 }
             }
         }
     };
+
+    private MemoDetailAdapter.IMemoViewListener mMemoListener = new MemoDetailAdapter.IMemoViewListener() {
+        @Override
+        public void onDelete(int position) {
+            Log.d("TEST", "DELETE : " + position);
+
+            final int delPosition = position;
+
+            (new AlertDialog.Builder(ViewActivity.this)).setMessage("메모 항목을 삭제합니다.")
+                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mAdapter.removeItem(delPosition);
+                            mAdapter.notifyItemRemoved(delPosition);
+                        }
+                    }).create().show();
+
+        }
+    };
+
+    private class SaveTask extends AsyncTask<Void, Void, Boolean> {
+        private HashMap<MemoContent, String> mNewPath;
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                mNewPath = new HashMap<MemoContent, String>();
+
+                for(MemoContent memo : mAdapter.getAllList()) {
+                    if(memo.getContentType() == ContentType.CONTENT_TYPE_IMAGE) {
+                        String path = memo.getContent();
+                        if(path.startsWith("content://")) {
+                            //gallery image. copy to local.
+                            int idx;
+                            String filename = path.substring(path.lastIndexOf('/') + 1);
+                            idx = filename.lastIndexOf('.');
+                            String ext = "";
+
+                            if(idx != -1) {
+                                ext = filename.substring(idx + 1);
+                                filename = filename.substring(0, idx);
+                            }
+
+                            File f;
+                            String toPath;
+                            idx = 0;
+
+                            do {
+                                toPath = getExternalFilesDir(null).getAbsolutePath() + "/" + filename + "_" + idx;
+                                if(ext.length() > 0) {
+                                    toPath +=  "." + ext;
+                                }
+
+                                idx++;
+                                f = new File(toPath);
+                            }while(f.exists());
+
+                            mNewPath.put(memo, toPath);
+
+                            InputStream is = getContentResolver().openInputStream(Uri.parse(path));
+                            FileOutputStream fos = new FileOutputStream(toPath);
+                            byte [] buf = new byte[1024 * 1024];
+                            int nRead;
+
+                            while((nRead = is.read(buf)) > 0) {
+                                fos.write(buf, 0, nRead);
+                            }
+                            fos.close();
+                            is.close();
+                        }
+                    }
+                }
+
+                return true;
+            }catch(FileNotFoundException e) {
+                e.printStackTrace();
+            }catch(IOException e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            if(aBoolean) {
+                for(MemoContent memo : mAdapter.getAllList()) {
+                    String newPath = mNewPath.get(memo);
+                    if(newPath != null) {
+                        memo.setContent(newPath);
+                    }
+                }
+
+                saveAndExit();
+            }else {
+                Snackbar.make(mMemoView, "이미지 파일 저장중 오류 발생함", Snackbar.LENGTH_SHORT).show();
+            }
+
+            mSaveTask = null;
+        }
+    }
 }

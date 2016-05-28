@@ -2,10 +2,12 @@ package c.m.mobile8.adapter;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -24,6 +26,7 @@ import c.m.mobile8.utils.ThemeUtil;
  * Created by kdggg on 2016-05-28.
  */
 public class MemoListViewAdapter extends BaseAdapter {
+    private final String TAG = "MemoListViewAdapter";
     private Context context;
     private List<Memo> memoList;
     private boolean[] isSelected;
@@ -55,13 +58,15 @@ public class MemoListViewAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.memo_list_item, null);
             holder.textViewMemoTitle = (TextView)convertView.findViewById(R.id.textViewMemoTitle);
             holder.textViewUpdateDate = (TextView)convertView.findViewById(R.id.textViewUpdateDate);
+            holder.imageViewContainImage = (ImageView) convertView.findViewById(R.id.imageViewContainImage);
+
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder)convertView.getTag();
         }
         Memo memo = memoList.get(position);
 
-        SimpleDateFormat formatter = new SimpleDateFormat ( "yy/MM/dd HH:mm", Locale.KOREA );
+        SimpleDateFormat formatter = new SimpleDateFormat ("yy/MM/dd HH:mm", Locale.KOREA);
         Date currentTime = new Date();
         currentTime.setTime(memo.getUpdateDate());
         String updateDate = formatter.format ( currentTime );
@@ -69,32 +74,33 @@ public class MemoListViewAdapter extends BaseAdapter {
         //CONTENT_TYPE_TEXT
         Iterator<MemoContent> iter = memo.getMemoContents().iterator();
         String content = "";
+        boolean isContainImage = false;
         while (iter.hasNext()) {
             MemoContent memoContent = iter.next();
             if(memoContent.getContentType() == ContentType.CONTENT_TYPE_TEXT) {
                 content += memoContent.getContent();
-
             } else if(memoContent.getContentType() == ContentType.CONTENT_TYPE_IMAGE) {
-                content += " (사진) ";
+                //content += " (사진) ";
+                isContainImage = true;
             } else if(memoContent.getContentType() == ContentType.CONTENT_TYPE_AUDIO) {
-                content += " (음성) ";
+                //content += " (음성) ";
             } else if(memoContent.getContentType() == ContentType.CONTENT_TYPE_VIDIO) {
-                content += " (영상) ";
+                //content += " (영상) ";
             }
         }
 
-        if(isSelected[position]) {
-            convertView.setBackgroundColor(ThemeUtil.getMainColor(context, ThemeUtil.getTheme(context)));
-        } else {
-            convertView.setBackground(null);
-        }
+
         holder.textViewUpdateDate.setText(updateDate);
-        holder.textViewMemoTitle.setText(content);
+        if(!content.equals("")) holder.textViewMemoTitle.setText(content);
+        else holder.textViewMemoTitle.setText("텍스트 없음");
+        if(isContainImage) holder.imageViewContainImage.setVisibility(View.VISIBLE);
+        else holder.imageViewContainImage.setVisibility(View.GONE);
 
         return convertView;
     }
     private class ViewHolder {
         public TextView textViewUpdateDate;
         public TextView textViewMemoTitle;
+        public ImageView imageViewContainImage;
     }
 }
