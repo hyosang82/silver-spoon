@@ -24,6 +24,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -62,7 +65,8 @@ public class ViewActivity extends AppCompatActivity {
     private int mMemoId = -1;
     private SaveTask mSaveTask = null;
     private FloatingActionButton mBtnAdd;
-
+    private Menu mMenu;
+    private CoordinatorLayout mCoordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +77,7 @@ public class ViewActivity extends AppCompatActivity {
         ImageDecoder.getInstance().setContext(this);
         MemoTextViewHolder.bUpdated = false;
 
-        CoordinatorLayout mainLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
         mMemoView = (RecyclerView) findViewById(R.id.memo_view);
         mMemoView.setHasFixedSize(true);
         mMemoView.setLayoutManager(new LinearLayoutManager(this));
@@ -83,8 +87,6 @@ public class ViewActivity extends AppCompatActivity {
         mMemoView.setAdapter(mAdapter);
 
         getSupportActionBar().setTitle("메모 보기");
-        findViewById(R.id.btn_cancel).setOnClickListener(mButtonListener);
-        findViewById(R.id.btn_save).setOnClickListener(mButtonListener);
 
         mBtnAdd = (FloatingActionButton) findViewById(R.id.btn_memo_item_add);
         mBtnAdd.setImageResource(R.drawable.icon_fab_plus);
@@ -120,7 +122,36 @@ public class ViewActivity extends AppCompatActivity {
             }
         }
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        mMenu = menu;
+        inflater.inflate(R.menu.menu_detail_main, mMenu);
 
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_item_save:
+                //save and exit
+                updateDataRecursive(mMemoView);
+
+                if(mAdapter.isEmpty()) {
+                    Snackbar snack = Snackbar.make(mCoordinatorLayout, "메모가 작성되지 않았습니다.", Snackbar.LENGTH_SHORT);
+                    snack.show();
+                }else {
+                    startSave();
+                }
+                break;
+            case R.id.action_item_cancel:
+                onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     private String getMemoTitle() {
         for(MemoContent memo : mAdapter.getAllList()) {
             if(memo.getContentType() == ContentType.CONTENT_TYPE_TEXT) {
@@ -299,24 +330,7 @@ public class ViewActivity extends AppCompatActivity {
         }
     };
 
-    private View.OnClickListener mButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if(v.getId() == R.id.btn_cancel) {
-                onBackPressed();
-            }else if(v.getId() == R.id.btn_save) {
-                //save and exit
-                updateDataRecursive(mMemoView);
 
-                if(mAdapter.isEmpty()) {
-                    Snackbar snack = Snackbar.make(v, "메모가 작성되지 않았습니다.", Snackbar.LENGTH_SHORT);
-                    snack.show();
-                }else {
-                    startSave();
-                }
-            }
-        }
-    };
 
     private MemoDetailAdapter.IMemoViewListener mMemoListener = new MemoDetailAdapter.IMemoViewListener() {
         @Override
