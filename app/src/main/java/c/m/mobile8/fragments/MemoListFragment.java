@@ -53,7 +53,6 @@ public class MemoListFragment extends Fragment {
         DBManager.getInstance(getActivity().getApplicationContext()).insertMemo(memo);
         */
 
-
         memoList = DBManager.getInstance(getActivity().getApplicationContext()).getMemoList();
 
         listViewMemoList = (ListView)rootView.findViewById(R.id.listViewMemoList);
@@ -75,7 +74,6 @@ public class MemoListFragment extends Fragment {
         listViewMemoList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.e(TAG, "long click " + position);
                 if(!isSelectMode) {
                     isSelectMode = true;
                     isSelected = new boolean[memoList.size()];
@@ -91,10 +89,19 @@ public class MemoListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.e(TAG, "resume");
+        isSelectMode = false;
         memoList = DBManager.getInstance(getActivity().getApplicationContext()).getMemoList();
         memoListViewAdapter = new MemoListViewAdapter(getActivity().getApplicationContext(), memoList);
         listViewMemoList.setAdapter(memoListViewAdapter);
+    }
+
+    public boolean getIsSelectMode() {
+        return isSelectMode;
+    }
+    public void setIsSelectMode(boolean isSelectMode) {
+        this.isSelectMode = isSelectMode;
+        isSelected = new boolean[memoList.size()];
+        memoListViewAdapter.setSelected(isSelected);
     }
 
     @Override
