@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -25,9 +27,20 @@ public class MemoDetailAdapter extends RecyclerView.Adapter<ViewHolderBase> {
     private static final int VIEW_TYPE_MEMO_IMAGE = 0x02;
 
     private List<MemoContent> mList = new ArrayList<MemoContent>();
+    private IMemoViewListener mListener = null;
+
+    public static interface IMemoViewListener {
+        public void onDelete(int position);
+    }
 
     @Override
     public ViewHolderBase onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+        View mainView = inflater.inflate(R.layout.memo_item_base, parent, false);
+        FrameLayout contArea = (FrameLayout) mainView.findViewById(R.id.fl_content);
+        View contView = null;
+
         int layout = R.layout.memo_item_text;
         Class<? extends ViewHolderBase> vhClass = null;
 
@@ -43,10 +56,25 @@ public class MemoDetailAdapter extends RecyclerView.Adapter<ViewHolderBase> {
                 break;
         }
 
-        View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
+        contView = inflater.inflate(layout, (ViewGroup) contArea, true);
+
+        ImageView btnDelete = (ImageView) mainView.findViewById(R.id.btn_delete);
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mListener != null) {
+                    Object tag = v.getTag();
+                    if(tag instanceof Integer) {
+                        mListener.onDelete((int)tag);
+                    }
+                }
+            }
+        });
 
         try {
-            return vhClass.getConstructor(View.class).newInstance(v);
+            ViewHolderBase vh = (ViewHolderBase) vhClass.getConstructor(View.class, View.class).newInstance(mainView, contView);
+            vh.mBtnDelete = btnDelete;
+            return vh;
         }catch(Exception e) {
             e.printStackTrace();
             return null;
@@ -58,8 +86,13 @@ public class MemoDetailAdapter extends RecyclerView.Adapter<ViewHolderBase> {
         MemoContent item = mList.get(position);
 
         if(item != null) {
+            holder.mBtnDelete.setTag(position);
             holder.setData(item);
         }
+    }
+
+    public void setListener(IMemoViewListener listener) {
+        mListener = listener;
     }
 
     @Override
@@ -83,6 +116,11 @@ public class MemoDetailAdapter extends RecyclerView.Adapter<ViewHolderBase> {
 
         return -1;
     }
+
+    public void removeItem(int position) {
+        mList.remove(position);
+    }
+
 
     @Override
     public int getItemCount() {

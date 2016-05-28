@@ -6,13 +6,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.squareup.timessquare.CalendarPickerView;
+import android.widget.CalendarView;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import c.m.mobile8.R;
+import c.m.mobile8.utils.DBManager;
 
 
 /**
@@ -20,6 +20,7 @@ import c.m.mobile8.R;
  *
  */
 public class MemoCalendarFragment extends Fragment {
+    private CalendarView mCalendar;
 
     public MemoCalendarFragment() {
         // Required empty public constructor
@@ -32,21 +33,38 @@ public class MemoCalendarFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_memo_calendar, container, false);
 
-        Calendar nextYear = Calendar.getInstance();
-        nextYear.add(Calendar.YEAR, 1);
-
-        CalendarPickerView calendar = (CalendarPickerView) rootView.findViewById(R.id.calendar_view);
-        Date today = new Date();
-        calendar.init(today, nextYear.getTime())
-                .withSelectedDate(today);
-
+        mCalendar = (CalendarView) rootView.findViewById(R.id.calendar_view);
+        initCalendar();
         return rootView;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        //TODO
+    public void initCalendar() {
+        Calendar startDate = Calendar.getInstance();
+        Calendar endDate = Calendar.getInstance();
+        long tmpStartDate = DBManager.getInstance(getActivity()).getStartDateForCalendar();
+        Date today = new Date();
+
+        if(tmpStartDate == 0) {
+            startDate.setTime(today);
+            endDate.setTime(today);
+            startDate.add(Calendar.MONTH, -1);
+            endDate.add(Calendar.MONTH, 1);
+            mCalendar.setMinDate(startDate.getTimeInMillis());
+            mCalendar.setMaxDate(endDate.getTimeInMillis());
+        } else {
+            startDate.setTimeInMillis(tmpStartDate);
+            endDate.setTime(today);
+            startDate.add(Calendar.MONTH, -1);
+            endDate.add(Calendar.MONTH, 1);
+            mCalendar.setMinDate(startDate.getTimeInMillis());
+            mCalendar.setMaxDate(endDate.getTimeInMillis());
+        }
+        //TODO: MainActivity에서 들고있는 Memo List를 달력에 표현
+        mCalendar.setDate(startDate.getTimeInMillis());
+        mCalendar.setDate(endDate.getTimeInMillis());
+//        mCalendar.addEv
+        //TODO: click listener 구현
+
     }
 
 }

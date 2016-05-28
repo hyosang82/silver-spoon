@@ -100,7 +100,6 @@ public class DBManager {
                     }
                 }
             } catch (SQLiteException ex) {
-                Log.e(TAG, ex.toString());
                 ex.printStackTrace();
             } finally {
                 if (cursor != null) {
@@ -168,7 +167,6 @@ public class DBManager {
                     }
                 }
             } catch (SQLiteException ex) {
-                Log.e(TAG, ex.toString());
                 ex.printStackTrace();
             } finally {
                 if (cursor != null) {
@@ -198,6 +196,73 @@ public class DBManager {
             sqlDB = dbHelper.openReadWriteDataBase();
             ContentValues insertValues = new ContentValues();
 
+            insertValues.put("created_date", memo.getCreatedDate());
+            insertValues.put("update_date", memo.getUpdateDate());
+            insertValues.put("theme", memo.getTheme());
+
+            long rowId = sqlDB.insert("memo_tbl", null,
+                    insertValues);
+            if(MConstants.isDEBUG) {
+                if(rowId == -1)
+                    Log.i(TAG, "insertMemo() > memo_tbl failed");
+                else
+                    Log.i(TAG, "insertMemo() > memo_tbl success : rowId = " + rowId);
+            }
+
+            if (rowId != -1) {
+                memo.setId((int)rowId);
+                result = true;
+                //TODO: Insert MemoContents
+                int tmpSeq = 0;
+                Iterator<MemoContent> iter = memo.getMemoContents().iterator();
+                while (iter.hasNext()) {
+                    MemoContent memoContent = (MemoContent)iter.next();
+                    memoContent.setSequence(tmpSeq);
+                    tmpSeq++;
+                    insertValues = new ContentValues();
+                    insertValues.put("sequence", memoContent.getSequence());
+                    insertValues.put("memo_id", rowId);
+                    insertValues.put("content", memoContent.getContent());
+                    insertValues.put("content_type", memoContent.getContentType().ordinal());
+
+                    long contentRowId = sqlDB.insert("memo_content_tbl", null,
+                            insertValues);
+                    memoContent.setMemo_id((int)rowId);
+                    if(MConstants.isDEBUG) {
+                        if(rowId == -1)
+                            Log.i(TAG, "insertMemo() > memo_content_tbl failed : " + memoContent.getSequence() + ", " + rowId + ", " + memoContent.getContent() + ",'" + memoContent.getContentType());
+                        else
+                            Log.i(TAG, "insertMemo() > memo_content_tbl success : ");
+                    }
+                }
+            } else {
+                result = false;
+            }
+        } catch (SQLiteException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (sqlDB != null) {
+                sqlDB.close();
+            }
+        }
+        return result;
+    }
+    //TODO: Update Memo
+    public boolean updateMemo(Memo memo) {
+        boolean result = false;
+        SQLiteDatabase sqlDB = null;
+
+        if(MConstants.isDEBUG)
+            Log.i(TAG, "insertMemo() start");
+        try {
+            sqlDB = dbHelper.openReadWriteDataBase();
+            ContentValues insertValues = new ContentValues();
+
+            String[] whereArgs = { "" + memo.getId() };
+            sqlDB.delete("memo_content_tbl", "memo_id=?", whereArgs);
+            sqlDB.delete("memo_tbl", "id=?", whereArgs);
+
+            insertValues.put("id", memo.getId());
             insertValues.put("created_date", memo.getCreatedDate());
             insertValues.put("update_date", memo.getUpdateDate());
             insertValues.put("theme", memo.getTheme());
@@ -315,7 +380,6 @@ public class DBManager {
                     }
                 }
             } catch (SQLiteException ex) {
-                Log.e(TAG, ex.toString());
                 ex.printStackTrace();
             } finally {
                 if (cursor != null) {
@@ -363,5 +427,44 @@ public class DBManager {
 
         return result;
     }
-
+    public long getStartDateForCalendar() {
+        long result = 0;
+        String query = "SELECT created_date " +
+                "FROM memo_tbl " +
+                "ORDER BY created_date asc LIMIT 1;";
+        SQLiteDatabase sqlDB = null;
+        if(MConstants.isDEBUG)
+            Log.i(TAG, "startDateForCalendar() start");
+        try {
+            sqlDB = dbHelper.openReadOnlyDataBase();
+            Cursor cursor = null;
+            try {
+                cursor = sqlDB.rawQuery(query, null);
+                if (cursor.moveToFirst()) {
+                    if (cursor != null && cursor.getCount() > 0) {
+                        cursor.moveToPosition(-1);
+                        if (cursor.moveToNext()) {
+                            // memo value
+                            result = cursor.getLong(0);
+                        }
+                    }
+                }
+            } catch (SQLiteException ex) {
+                ex.printStackTrace();
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+        } catch (SQLiteException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (sqlDB != null) {
+                sqlDB.close();
+            }
+            if(MConstants.isDEBUG)
+                Log.i(TAG, "startDateForCalendar() end");
+        }
+        return result;
+    }
 }

@@ -16,8 +16,8 @@ public class MemoTextViewHolder extends ViewHolderBase{
     public EditText mEditText;
     public static boolean bUpdated = false;
 
-    public MemoTextViewHolder(View itemView) {
-        super(itemView);
+    public MemoTextViewHolder(View mainView, View itemView) {
+        super(mainView);
 
         mEditText = (EditText) itemView.findViewById(R.id.memo_text);
         mEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {

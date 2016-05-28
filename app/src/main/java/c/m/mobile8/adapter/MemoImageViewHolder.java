@@ -15,8 +15,8 @@ import c.m.mobile8.utils.ImageDecoder;
  */
 public class MemoImageViewHolder extends ViewHolderBase{
     public ImageView mImageView;
-    public MemoImageViewHolder(View itemView) {
-        super(itemView);
+    public MemoImageViewHolder(View mainView, View itemView) {
+        super(mainView);
 
         mImageView = (ImageView) itemView.findViewById(R.id.memo_image);
     }
