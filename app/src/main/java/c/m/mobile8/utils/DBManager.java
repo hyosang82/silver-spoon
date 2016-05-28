@@ -10,6 +10,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -122,17 +123,12 @@ public class DBManager {
         return getMemoList(false);
     }
     public List<Memo> getMemoList(boolean isOrderUpdateDate) {
-        List<Memo> result = new ArrayList<Memo>();
+        Map<Integer, Memo> tmpResult = new HashMap<Integer, Memo>();
+        List<Memo> result;
         String query = "";
-        if(isOrderUpdateDate) {
-            query = "SELECT id,created_date, update_date, theme, sequence, content, content_type " +
-                    "FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id" +
-                    " ORDER BY update_date desc, sequence asc;";
-        } else {
-            query = "SELECT id,created_date, update_date, theme, sequence, content, content_type " +
-                    "FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id" +
-                    " ORDER BY created_date desc, sequence asc;";
-        }
+        query = "SELECT id,created_date, update_date, theme, sequence, content, content_type " +
+                "FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id" +
+                " ORDER BY sequence asc;";
         SQLiteDatabase sqlDB = null;
         if(MConstants.isDEBUG)
             Log.i(TAG, "getMemoList() start");
@@ -144,7 +140,6 @@ public class DBManager {
                 if (cursor.moveToFirst()) {
                     if (cursor != null && cursor.getCount() > 0) {
                         cursor.moveToPosition(-1);
-                        int currentMemoId = -1;
                         Memo memo = null;
                         while (cursor.moveToNext()) {
                             // memo value
@@ -152,17 +147,15 @@ public class DBManager {
                             long created_date = cursor.getLong(1);
                             long update_date = cursor.getLong(2);
                             int theme= cursor.getInt(3);
-                            if(currentMemoId == -1 || currentMemoId != memoId) {
+                            if(tmpResult.get(memoId) == null) {
                                 memo = new Memo(memoId, created_date, update_date, theme);
-                                result.add(memo);
-                                currentMemoId = memoId;
+                                tmpResult.put(memoId, memo);
                             }
                             //memo contents value
                             int sequence = cursor.getInt(4);
                             String content = cursor.getString(5);
                             ContentType contentType = ContentType.values()[cursor.getInt(6)];
-                            memo.addMemoContent(new MemoContent(sequence, memoId, content, contentType));
-
+                            tmpResult.get(memoId).addMemoContent(new MemoContent(sequence, memoId, content, contentType));
                         }
                     }
                 }
@@ -182,6 +175,14 @@ public class DBManager {
             if(MConstants.isDEBUG)
                 Log.i(TAG, "getMemoList() end");
         }
+        if(isOrderUpdateDate) {
+            //TODO : order by update date
+
+        } else {
+            //TODO : order by created date
+
+        }
+        result = new ArrayList<Memo>(tmpResult.values());
         return result;
     }
 
@@ -194,20 +195,20 @@ public class DBManager {
             Log.i(TAG, "insertMemo() start");
         try {
             sqlDB = dbHelper.openReadWriteDataBase();
-            ContentValues insertValues = new ContentValues();
+            ContentValues updateValues = new ContentValues();
 
-            insertValues.put("created_date", memo.getCreatedDate());
-            insertValues.put("update_date", memo.getUpdateDate());
-            insertValues.put("theme", memo.getTheme());
+            updateValues.put("update_date", memo.getUpdateDate());
+            String[] whereArgs = { "" + memo.getId() };
 
-            long rowId = sqlDB.insert("memo_tbl", null,
-                    insertValues);
+            long rowId = sqlDB.update("memo_tbl", updateValues, "memo_id=?",
+                    whereArgs);
             if(MConstants.isDEBUG) {
                 if(rowId == -1)
                     Log.i(TAG, "insertMemo() > memo_tbl failed");
                 else
                     Log.i(TAG, "insertMemo() > memo_tbl success : rowId = " + rowId);
             }
+            ContentValues insertValues = new ContentValues();
 
             if (rowId != -1) {
                 memo.setId((int)rowId);

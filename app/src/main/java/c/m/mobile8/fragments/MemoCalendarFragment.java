@@ -33,7 +33,7 @@ public class MemoCalendarFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_memo_calendar, container, false);
 
-        mCalendar = (CalendarView) rootView.findViewById(R.id.calendar_view);
+//        mCalendar = (CalendarView) rootView.findViewById(R.id.calendar_view);
         initCalendar();
         return rootView;
     }

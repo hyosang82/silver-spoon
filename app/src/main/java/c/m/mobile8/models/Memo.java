@@ -1,6 +1,7 @@
 package c.m.mobile8.models;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,4 +76,10 @@ public class Memo {
     public void addMemoContent(MemoContent content) {
         getMemoContents().add(content);
     }
+
+//    Comparator<Memo> sort = new Comparator<Memo>() {
+//        public int compare(Memo o1, Memo o2) {
+//            return o2.getCreatedDate().compareTo(o1.getCreatedDate());
+//        }
+//    };
 }
