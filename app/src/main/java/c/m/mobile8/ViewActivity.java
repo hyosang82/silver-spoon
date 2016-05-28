@@ -91,9 +91,11 @@ public class ViewActivity extends AppCompatActivity {
         mBtnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NewMemoItemDialog dlg = new NewMemoItemDialog(ViewActivity.this);
-                dlg.setListener(mNewMemoItemDialogListener);
-                dlg.show();
+                //사진 항목 추가
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, REQUEST_CODE_PICK_PHOTO);
             }
         });
 
@@ -182,34 +184,6 @@ public class ViewActivity extends AppCompatActivity {
         mBtnAdd.setBackgroundTintList(ColorStateList.valueOf(ThemeUtil.getSystemColor(this, ThemeUtil.getTheme(this))));
     }
 
-    private DialogBase.IDialogListener mNewMemoItemDialogListener = new DialogBase.IDialogListener() {
-        @Override
-        public void onButtonClicked(Dialog me, View btnView) {
-            int id = btnView.getId();
-            if(id == R.id.btn_text) {
-                //텍스트 항목 추가
-                MemoContent item = new MemoContent(-1, -1, "", ContentType.CONTENT_TYPE_TEXT);
-                int inserted = mAdapter.addItem(item);
-                if(inserted >= 0) {
-                    mAdapter.notifyItemInserted(inserted);
-
-                    requestEditTextFocus();
-                }else {
-                    Snackbar snack = Snackbar.make(btnView, "Memo item add failed", Snackbar.LENGTH_SHORT);
-                    snack.show();
-                }
-            }else if(id == R.id.btn_photo) {
-                //사진 항목 추가
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, REQUEST_CODE_PICK_PHOTO);
-            }
-
-            me.dismiss();
-        }
-    };
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == Activity.RESULT_OK) {
@@ -219,6 +193,13 @@ public class ViewActivity extends AppCompatActivity {
                     String uri =  data.getData().toString();
                     MemoContent item = new MemoContent(-1, -1, uri, ContentType.CONTENT_TYPE_IMAGE);
                     int inserted = mAdapter.addItem(item);
+                    if(inserted >= 0) {
+                        mAdapter.notifyItemInserted(inserted);
+                    }
+
+                    //사진 추가시 텍스트필드도 하나 추가
+                    item = new MemoContent(-1, -1, "", ContentType.CONTENT_TYPE_TEXT);
+                    inserted = mAdapter.addItem(item);
                     if(inserted >= 0) {
                         mAdapter.notifyItemInserted(inserted);
                     }
@@ -241,6 +222,9 @@ public class ViewActivity extends AppCompatActivity {
         Memo memo = new Memo();
 
         for(MemoContent m : mAdapter.getAllList()) {
+            if(m.getContent().length() == 0) {
+                continue;
+            }
             memo.addMemoContent(m);
         }
 

@@ -19,6 +19,7 @@ import c.m.mobile8.R;
 import c.m.mobile8.adapter.MemoTextViewHolder;
 import c.m.mobile8.models.Memo;
 import c.m.mobile8.models.MemoContent;
+import c.m.mobile8.models.enums.ContentType;
 
 /**
  * Created by Hyosang on 2016-05-28.
@@ -137,6 +138,15 @@ public class MemoDetailAdapter extends RecyclerView.Adapter<ViewHolderBase> {
 
     public void setData(List<MemoContent> memoContents) {
         mList = memoContents;
+
+        //맨 마지막 메모가 사진이면 텍스트필드 하나 추가
+        if(mList.size() > 0) {
+            MemoContent last = mList.get(mList.size() - 1);
+            if(last.getContentType() == ContentType.CONTENT_TYPE_IMAGE) {
+                MemoContent t = new MemoContent(-1, -1, "", ContentType.CONTENT_TYPE_TEXT);
+                mList.add(t);
+            }
+        }
     }
 
     public List<MemoContent> getAllList() {
