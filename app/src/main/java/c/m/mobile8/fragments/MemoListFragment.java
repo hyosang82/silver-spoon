@@ -19,6 +19,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import c.m.mobile8.MainActivity;
+import c.m.mobile8.MemoDetailActivity;
 import c.m.mobile8.R;
 import c.m.mobile8.ViewActivity;
 import c.m.mobile8.adapter.MemoListViewAdapter;
@@ -179,7 +180,7 @@ public class MemoListFragment extends Fragment {
     }
 
     private void enterDetailView(int memoId) {
-        Intent i = new Intent(getActivity(), ViewActivity.class);
+        Intent i = new Intent(getActivity(), MemoDetailActivity.class);
         i.putExtra(ViewActivity.EXTRA_MEMO_ID, memoId);
         startActivity(i);
     }
