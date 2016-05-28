@@ -21,29 +21,51 @@
             android:textSize="12sp" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textViewMemoTitle"
-            android:layout_alignParentTop="false"
             android:gravity="center_vertical"
             android:textColor="#555555"
             android:singleLine="true"
             android:layout_centerVertical="true"
-            android:layout_margin="5dp"
             android:layout_below="@+id/textViewUpdateDate"
             android:textSize="20sp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_alignParentStart="true"
             android:layout_toLeftOf="@+id/imageViewContainImage" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/imageViewContainImage"
-            android:layout_alignTop="@+id/textViewMemoTitle"
-            android:layout_alignBottom="@+id/textViewMemoTitle"
-            android:layout_alignRight="@+id/textViewUpdateDate"
-            android:layout_alignLeft="@+id/textViewUpdateDate"
-            android:scaleType="fitEnd"
-            android:src="@android:drawable/ic_menu_camera" />
+            android:scaleType="fitCenter"
+            android:src="@android:drawable/ic_menu_camera"
+            android:layout_toLeftOf="@+id/imageViewContainVideo"
+            android:layout_below="@+id/textViewUpdateDate"
+            android:layout_alignBottom="@+id/textViewMemoTitle" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageViewContainVideo"
+            android:scaleType="fitCenter"
+            android:src="@android:drawable/ic_menu_slideshow"
+            android:layout_toLeftOf="@+id/imageViewContainAudio"
+            android:layout_below="@+id/textViewUpdateDate"
+            android:layout_alignBottom="@+id/textViewMemoTitle" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageViewContainAudio"
+            android:scaleType="fitCenter"
+            android:src="@android:drawable/ic_btn_speak_now"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/textViewUpdateDate"
+            android:layout_alignBottom="@+id/textViewMemoTitle" />
 
     </RelativeLayout>
 </RelativeLayout>

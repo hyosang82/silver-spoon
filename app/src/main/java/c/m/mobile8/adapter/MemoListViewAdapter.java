@@ -59,6 +59,8 @@ public class MemoListViewAdapter extends BaseAdapter {
             holder.textViewMemoTitle = (TextView)convertView.findViewById(R.id.textViewMemoTitle);
             holder.textViewUpdateDate = (TextView)convertView.findViewById(R.id.textViewUpdateDate);
             holder.imageViewContainImage = (ImageView) convertView.findViewById(R.id.imageViewContainImage);
+            holder.imageViewContainAudio = (ImageView) convertView.findViewById(R.id.imageViewContainAudio);
+            holder.imageViewContainVideo = (ImageView) convertView.findViewById(R.id.imageViewContainVideo);
 
             convertView.setTag(holder);
         } else {
@@ -74,27 +76,29 @@ public class MemoListViewAdapter extends BaseAdapter {
         //CONTENT_TYPE_TEXT
         Iterator<MemoContent> iter = memo.getMemoContents().iterator();
         String content = "";
-        boolean isContainImage = false;
+        boolean[] isContainFile = new boolean[3];
         while (iter.hasNext()) {
             MemoContent memoContent = iter.next();
             if(memoContent.getContentType() == ContentType.CONTENT_TYPE_TEXT) {
                 content += memoContent.getContent();
             } else if(memoContent.getContentType() == ContentType.CONTENT_TYPE_IMAGE) {
-                //content += " (사진) ";
-                isContainImage = true;
+                isContainFile[0] = true;
             } else if(memoContent.getContentType() == ContentType.CONTENT_TYPE_AUDIO) {
-                //content += " (음성) ";
+                isContainFile[1] = true;
             } else if(memoContent.getContentType() == ContentType.CONTENT_TYPE_VIDIO) {
-                //content += " (영상) ";
+                isContainFile[2] = true;
             }
         }
-
-
         holder.textViewUpdateDate.setText(updateDate);
         if(!content.equals("")) holder.textViewMemoTitle.setText(content);
         else holder.textViewMemoTitle.setText("텍스트 없음");
-        if(isContainImage) holder.imageViewContainImage.setVisibility(View.VISIBLE);
-        else holder.imageViewContainImage.setVisibility(View.GONE);
+
+        if (isContainFile[0]) holder.imageViewContainImage.setVisibility(View.VISIBLE);
+        else holder.imageViewContainImage.setImageBitmap(null);
+        if (isContainFile[1]) holder.imageViewContainAudio.setVisibility(View.VISIBLE);
+        else holder.imageViewContainAudio.setImageBitmap(null);
+        if (isContainFile[2]) holder.imageViewContainVideo.setVisibility(View.VISIBLE);
+        else holder.imageViewContainVideo.setImageBitmap(null);
 
         return convertView;
     }
@@ -102,5 +106,7 @@ public class MemoListViewAdapter extends BaseAdapter {
         public TextView textViewUpdateDate;
         public TextView textViewMemoTitle;
         public ImageView imageViewContainImage;
+        public ImageView imageViewContainAudio;
+        public ImageView imageViewContainVideo;
     }
 }
