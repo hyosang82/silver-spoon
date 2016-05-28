@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import java.util.List;
 import c.m.mobile8.R;
 import c.m.mobile8.ViewActivity;
@@ -29,6 +29,7 @@ public class MemoListFragment extends Fragment {
     private ListView listViewMemoList;
     private MemoListViewAdapter memoListViewAdapter;
     private List<Memo> memoList;
+    private TextView textViewNoMemo;
 
     public MemoListFragment() {
         // Required empty public constructor
@@ -38,16 +39,9 @@ public class MemoListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_memo_list, container, false);
-
-        /*
-        Date date = new Date();
-        Memo memo = new Memo(2, date.getTime(), date.getTime());
-        memo.addMemoContent(new MemoContent(0, 2, "test1", ContentType.CONTENT_TYPE_TEXT));
-        memo.addMemoContent(new MemoContent(1, 2, "test2", ContentType.CONTENT_TYPE_IMAGE));
-        DBManager.getInstance(getActivity().getApplicationContext()).insertMemo(memo);
-        */
-
+        textViewNoMemo = (TextView)rootView.findViewById(R.id.textViewNoMemo);
         memoList = DBManager.getInstance(getActivity().getApplicationContext()).getMemoList();
+        setTextNoMemo(memoList.size());
 
         listViewMemoList = (ListView)rootView.findViewById(R.id.listViewMemoList);
         memoListViewAdapter = new MemoListViewAdapter(getActivity().getApplicationContext(), memoList);
@@ -89,14 +83,22 @@ public class MemoListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         reloadData();
     }
 
     public void reloadData() {
         memoList = DBManager.getInstance(getActivity().getApplicationContext()).getMemoList();
+        setTextNoMemo(memoList.size());
         memoListViewAdapter = new MemoListViewAdapter(getActivity().getApplicationContext(), memoList);
         listViewMemoList.setAdapter(memoListViewAdapter);
+    }
+    private void setTextNoMemo(int size) {
+        if(size == 0) {
+            textViewNoMemo.setText("표시할 메모가 없습니다.");
+            textViewNoMemo.setVisibility(View.VISIBLE);
+        } else {
+            textViewNoMemo.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -110,5 +112,4 @@ public class MemoListFragment extends Fragment {
         i.putExtra(ViewActivity.EXTRA_MEMO_ID, memoId);
         startActivity(i);
     }
-
 }
