@@ -125,43 +125,7 @@ public class MemoListActivity extends AppCompatActivity {
     //implements Back key pressed
     @Override
     public void onBackPressed() {
-        exitApp();
+        finish();
     }
 
-    public void exitApp() {
-        if (mIsBackKeyPressed == false) {
-            mIsBackKeyPressed = true;
-
-            mCurrTimeInMillis = Calendar.getInstance().getTimeInMillis();
-            Snackbar snackbar = Snackbar.make(mCoordinatorLayout, "\"Back key\"를 한번 더 누르시면 종료됩니다.", Snackbar.LENGTH_SHORT);
-            snackbar.show();
-//            showWarningToast("\"Back key\"를 한번 더 누르시면 종료됩니다.");
-            startTimer();
-        } else {
-            mIsBackKeyPressed = false;
-
-            if (Calendar.getInstance().getTimeInMillis() <= (mCurrTimeInMillis + (BACKKEY_TIMEOUT * MILLIS_IN_SEC))) {
-                // super.onBackPressed(); // or call finish..
-                moveTaskToBack(true);
-                finish();
-                android.os.Process.killProcess(android.os.Process.myPid());
-            }
-        }
-    }
-    private void startTimer() {
-        mTimerHandler.sendEmptyMessageDelayed(MSG_TIMER_EXPIRED,
-                BACKKEY_TIMEOUT * MILLIS_IN_SEC);
-    }
-
-    private Handler mTimerHandler = new Handler() {
-        public void handleMessage(Message msg) {
-
-            switch (msg.what) {
-                case MSG_TIMER_EXPIRED: {
-                    mIsBackKeyPressed = false;
-                }
-                break;
-            }
-        }
-    };
 }
