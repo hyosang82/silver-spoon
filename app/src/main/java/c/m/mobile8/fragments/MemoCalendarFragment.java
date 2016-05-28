@@ -62,6 +62,18 @@ public class MemoCalendarFragment extends Fragment {
             Memo memo = iter.next();
             mCalendar.addEvent(new Event(Color.argb(255, 255, 255, 255), memo.getCreatedDate(), memo), false);
         }
+        //today event
+        List<Event> eventList = mCalendar.getEvents(new Date());
+        List<Memo> memoTmpList = new ArrayList<Memo>();
+        if (eventList != null) {
+            for (Event event : eventList) {
+                memoTmpList.add((Memo) event.getData());
+            }
+
+            if(mMemoListViewAdapter != null)
+                mMemoListViewAdapter.setMemoList(memoList);
+            mMemoListViewAdapter.notifyDataSetChanged();
+        }
         listView.setAdapter(mMemoListViewAdapter);
         mMemoListViewAdapter.notifyDataSetChanged();
         mTextView = (TextView) rootView.findViewById(R.id.calendar_month_textview);
@@ -100,6 +112,14 @@ public class MemoCalendarFragment extends Fragment {
 
     }
     public void reloadData() {
+        List<Memo> memoList = ((MainActivity)getActivity()).mMemoList;
+        Iterator<Memo> iter = memoList.iterator();
+        mCalendar.removeAllEvents();
 
+        while(iter.hasNext()) {
+            Memo memo = iter.next();
+            mCalendar.addEvent(new Event(Color.argb(255, 255, 255, 255), memo.getCreatedDate(), memo), false);
+        }
+        mMemoListViewAdapter.notifyDataSetChanged();
     }
 }
