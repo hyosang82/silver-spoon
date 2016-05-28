@@ -88,8 +88,6 @@ public class MemoListViewAdapter extends BaseAdapter {
         if(isSelected[position]) {
             convertView.setBackgroundColor(ThemeUtil.getMainColor(context, ThemeUtil.getTheme(context)));
 
-            Log.e(TAG,""+ThemeUtil.getMainColor(context, ThemeUtil.getTheme(context)));
-
         } else {
             convertView.setBackground(null);
         }
