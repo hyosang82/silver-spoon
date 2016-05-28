@@ -3,7 +3,12 @@ package c.m.mobile8.fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -30,6 +35,7 @@ import c.m.mobile8.ViewActivity;
 import c.m.mobile8.adapter.MemoListViewAdapter;
 import c.m.mobile8.models.Memo;
 import c.m.mobile8.utils.DBManager;
+import c.m.mobile8.utils.ThemeUtil;
 
 
 /**
