@@ -133,6 +133,8 @@ public class ViewActivity extends AppCompatActivity {
         if(mMemoId < 0) {
             //created
             memo.setCreatedDate(System.currentTimeMillis());
+        }else {
+            memo.setId(mMemoId);
         }
         memo.setUpdateDate(System.currentTimeMillis());
 
