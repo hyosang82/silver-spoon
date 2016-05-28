@@ -68,8 +68,10 @@ public class MemoCalendarFragment extends Fragment {
             Memo memo = iter.next();
             mCalendar.addEvent(new Event(Color.argb(255, 255, 255, 255), memo.getCreatedDate(), memo), false);
         }
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, 1000);
         mCalendar.invalidate();
-
+        mCalendar.setCurrentDate(calendar.getTime());
         mTextView.setBackgroundColor(ThemeUtil.getMainColor(getActivity(), ThemeUtil.getTheme(getActivity())));
         mTextView.setText(dateFormatForMonth.format(mCalendar.getFirstDayOfCurrentMonth()));
         mCalendar.setListener(new CompactCalendarView.CompactCalendarViewListener() {
