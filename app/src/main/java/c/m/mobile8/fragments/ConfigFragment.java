@@ -18,12 +18,14 @@ import android.widget.TextView;
 
 import c.m.mobile8.MainActivity;
 import c.m.mobile8.R;
+import c.m.mobile8.dialog.SettingOrderDialogFragment;
 import c.m.mobile8.dialog.SettingThemeDialogFragment;
 import c.m.mobile8.utils.AppInfo;
+import c.m.mobile8.utils.SharedPreferenceManager;
 import c.m.mobile8.utils.ThemeUtil;
 
 
-public class ConfigFragment extends Fragment implements SettingThemeDialogFragment.OnThemeItemClickListener {
+public class ConfigFragment extends Fragment implements SettingThemeDialogFragment.OnThemeItemClickListener, SettingOrderDialogFragment.OnOrderItemClickListener {
     private final String TAG = "ConfigFragment";
     private ViewHolder mViewHolder;
 
@@ -77,12 +79,43 @@ public class ConfigFragment extends Fragment implements SettingThemeDialogFragme
                             .create().show();
                 }
             });
+
+            contact_opensource_license = (RelativeLayout) rootView.findViewById(R.id.contact_opensource_license);
+            contact_order_setting = (RelativeLayout) rootView.findViewById(R.id.contact_order_setting);
+            current_order = (TextView) rootView.findViewById(R.id.current_order);
+            int orderType = SharedPreferenceManager.getPreferencesOrder(getActivity());
+            switch(orderType) {
+                case SharedPreferenceManager.ORDER_BY_CREATED:
+                    current_order.setText("초기 작성일 기준");
+                    break;
+                case SharedPreferenceManager.ORDER_BY_UPDATE:
+                    current_order.setText("업데이트 기준");
+                    break;
+                case SharedPreferenceManager.ORDER_BY_THEME:
+                    current_order.setText("색상 기준");
+                    break;
+            }
+            contact_order_setting.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentManager fm = getFragmentManager();
+                    FragmentTransaction tr = fm.beginTransaction();
+                    Fragment prev = fm.findFragmentByTag("SettingOrderDialogFragment");
+                    if (prev != null) {
+                        tr.remove(prev);
+                    }
+                    SettingOrderDialogFragment dialog = new SettingOrderDialogFragment(ConfigFragment.this);
+                    dialog.show(tr, "SettingOrderDialogFragment");
+                }
+            });
         }
 
         TextView current_version;
         RelativeLayout contact_theme_setting;
         TextView current_theme;
         RelativeLayout contact_opensource_license;
+        RelativeLayout contact_order_setting;
+        TextView current_order;
     }
 
     @Override
@@ -92,6 +125,26 @@ public class ConfigFragment extends Fragment implements SettingThemeDialogFragme
         ThemeUtil.setTheme(getActivity(), midasTheme);
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.setActionBarColor(midasTheme);
+    }
+
+    @Override
+    public void onClickOrder(int orderType) {
+        switch(orderType) {
+            case SharedPreferenceManager.ORDER_BY_CREATED:
+                mViewHolder.current_order.setText("초기 작성일 기준");
+                SharedPreferenceManager.setPreferenceOrder(getActivity(), SharedPreferenceManager.ORDER_BY_CREATED);
+                break;
+            case SharedPreferenceManager.ORDER_BY_UPDATE:
+                mViewHolder.current_order.setText("업데이트 기준");
+                SharedPreferenceManager.setPreferenceOrder(getActivity(), SharedPreferenceManager.ORDER_BY_UPDATE);
+                break;
+            case SharedPreferenceManager.ORDER_BY_THEME:
+                mViewHolder.current_order.setText("색상 기준");
+                SharedPreferenceManager.setPreferenceOrder(getActivity(), SharedPreferenceManager.ORDER_BY_THEME);
+                break;
+        }
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.setOrderType(orderType);
     }
 
 }

@@ -120,10 +120,10 @@ public class DBManager {
     }
     //TODO: get memo list
     public List<Memo> getMemoList() {
-        return getMemoList(false);
+        return getMemoList(SharedPreferenceManager.ORDER_BY_UPDATE);
     }
 
-    public List<Memo> getMemoList(boolean isOrderUpdateDate) {
+    public List<Memo> getMemoList(int orderType) {
         List<Memo> result = new ArrayList<Memo>();
         String query = "";
         SQLiteDatabase sqlDB = null;
@@ -133,15 +133,24 @@ public class DBManager {
             sqlDB = dbHelper.openReadOnlyDataBase();
             Cursor cursor = null;
             try {
-                if(isOrderUpdateDate) {
-                    query = "SELECT id,created_date, update_date, theme " +
-                            "FROM memo_tbl " +
-                            "ORDER BY update_date desc;";
-                } else {
-                    query = "SELECT id,created_date, update_date, theme " +
-                            "FROM memo_tbl " +
-                            "ORDER BY created_date desc;";
+                switch(orderType) {
+                    case SharedPreferenceManager.ORDER_BY_CREATED:
+                        query = "SELECT id,created_date, update_date, theme " +
+                                "FROM memo_tbl " +
+                                "ORDER BY created_date desc;";
+                        break;
+                    case SharedPreferenceManager.ORDER_BY_THEME:
+                        query = "SELECT id,created_date, update_date, theme " +
+                                "FROM memo_tbl " +
+                                "ORDER BY theme asc, update_date desc;";
+                        break;
+                    case SharedPreferenceManager.ORDER_BY_UPDATE:
+                        query = "SELECT id,created_date, update_date, theme " +
+                                "FROM memo_tbl " +
+                                "ORDER BY update_date desc;";
+                        break;
                 }
+
                 cursor = sqlDB.rawQuery(query, null);
                 if (cursor.moveToFirst()) {
                     if (cursor != null && cursor.getCount() > 0) {
@@ -169,17 +178,10 @@ public class DBManager {
             while(iter.hasNext()) {
                 Memo memo = iter.next();
                 try {
-                    if(isOrderUpdateDate) {
-                        query = "SELECT sequence, memo_id, content, content_type " +
-                                "FROM memo_content_tbl " +
-                                "WHERE memo_id = " + memo.getId() +
-                                " ORDER BY sequence asc;";
-                    } else {
-                        query = "SELECT sequence, memo_id, content, content_type " +
-                                "FROM memo_content_tbl " +
-                                "WHERE memo_id = " + memo.getId() +
-                                " ORDER BY sequence asc;";
-                    }
+                    query = "SELECT sequence, memo_id, content, content_type " +
+                            "FROM memo_content_tbl " +
+                            "WHERE memo_id = " + memo.getId() +
+                            " ORDER BY sequence asc;";
                     cursor = sqlDB.rawQuery(query, null);
                     if (cursor.moveToFirst()) {
                         if (cursor != null && cursor.getCount() > 0) {
