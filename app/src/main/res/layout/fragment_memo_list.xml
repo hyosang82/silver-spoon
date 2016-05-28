@@ -4,25 +4,70 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="false">
+    android:fitsSystemWindows="false"
+    >
 
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textViewNoMemo"
-        android:textColor="#555555"
-        android:gravity="center_horizontal"
-        android:layout_margin="10dp" />
+        android:layout_height="match_parent">
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/listViewMemoList"
-        android:divider="#ffffff"
-        android:dividerHeight="1dp"
-        android:choiceMode="singleChoice"
-        android:layout_marginTop="1dp"
-        android:layout_marginBottom="1dp"
-        />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewNoMemo"
+            android:textColor="#555555"
+            android:gravity="center_horizontal"
+            android:layout_margin="10dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/editTextSearch"
+            android:hint="검색 키워드 입력"/>
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/imageViewSearch"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/editTextSearch"
+            android:layout_alignBottom="@+id/editTextSearch"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_search" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewNoSearch"
+            android:textColor="#555555"
+            android:gravity="center_horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="60dp" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/listViewMemoList"
+            android:divider="#ffffff"
+            android:dividerHeight="1dp"
+            android:choiceMode="singleChoice"
+            android:layout_marginBottom="1dp"
+            android:layout_below="@+id/editTextSearch" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/listVIewSearchList"
+            android:divider="#ffffff"
+            android:dividerHeight="1dp"
+            android:choiceMode="singleChoice"
+            android:layout_marginBottom="1dp"
+            android:layout_below="@+id/editTextSearch"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>
