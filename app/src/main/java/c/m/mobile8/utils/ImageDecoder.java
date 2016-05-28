@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.util.LruCache;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -48,7 +49,7 @@ public class ImageDecoder extends Thread {
 
         //이미지 디코딩 기준크기 지정
         float w = mContext.getResources().getDisplayMetrics().widthPixels;
-        mBaseWidth = (int)(w * 0.6f);
+        mBaseWidth = (int)(w * 0.8f);
     }
 
     public void decode(String location, ImageView targetView) {
@@ -115,6 +116,7 @@ public class ImageDecoder extends Thread {
                     opt.inSampleSize = getSampleSize(opt.outWidth);
 
                     is = getInputStream(info.location);
+
                     bitmap = info.bitmap = BitmapFactory.decodeStream(is, null, opt);
 
                     mBitmapCache.put(info.location, bitmap);
@@ -138,6 +140,12 @@ public class ImageDecoder extends Thread {
             if(msg.what == MSG_SET_BITMAP) {
                 DecoderInfo info = (DecoderInfo) msg.obj;
                 info.targetView.setImageBitmap(info.bitmap);
+
+                ViewGroup.LayoutParams lp = info.targetView.getLayoutParams();
+                lp.height = (int)((float)info.bitmap.getHeight() * ((float)mBaseWidth / (float)info.bitmap.getWidth()));
+                lp.width = mBaseWidth;
+                info.targetView.setLayoutParams(lp);
+
                 info.targetView.setTag(info.location);
                 info.bitmap = null;
             }
