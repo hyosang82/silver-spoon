@@ -231,44 +231,31 @@ public class DBManager {
             updateValues.put("update_date", memo.getUpdateDate());
             String[] whereArgs = { "" + memo.getId() };
 
-            long rowId = sqlDB.update("memo_tbl", updateValues, "id=?",
+            sqlDB.update("memo_tbl", updateValues, "id=?",
                     whereArgs);
-            if(MConstants.isDEBUG) {
-                if(rowId == -1)
-                    Log.i(TAG, "updateMemo() > memo_tbl failed");
-                else
-                    Log.i(TAG, "updateMemo() > memo_tbl success : rowId = " + rowId);
-            }
-            ContentValues insertValues = new ContentValues();
 
-            if (rowId != -1) {
-                memo.setId((int)rowId);
-                result = true;
-                //TODO: Insert MemoContents
-                int tmpSeq = 0;
-                Iterator<MemoContent> iter = memo.getMemoContents().iterator();
-                while (iter.hasNext()) {
-                    MemoContent memoContent = (MemoContent)iter.next();
-                    memoContent.setSequence(tmpSeq);
-                    tmpSeq++;
-                    insertValues = new ContentValues();
-                    insertValues.put("sequence", memoContent.getSequence());
-                    insertValues.put("memo_id", rowId);
-                    insertValues.put("content", memoContent.getContent());
-                    insertValues.put("content_type", memoContent.getContentType().ordinal());
+            String[] deleteWhereArgs = {"" + memo.getId()};
+            sqlDB.delete("memo_content_tbl", "memo_id=?", deleteWhereArgs);
 
-                    long contentRowId = sqlDB.insert("memo_content_tbl", null,
-                            insertValues);
-                    memoContent.setMemo_id((int)rowId);
-                    if(MConstants.isDEBUG) {
-                        if(rowId == -1)
-                            Log.i(TAG, "updateMemo() > memo_content_tbl failed : " + memoContent.getSequence() + ", " + rowId + ", " + memoContent.getContent() + ",'" + memoContent.getContentType());
-                        else
-                            Log.i(TAG, "updateMemo() > memo_content_tbl success : ");
-                    }
-                }
-            } else {
-                result = false;
+            ContentValues insertValues;
+
+            result = true;
+            //TODO: Insert MemoContents
+            int tmpSeq = 0;
+            Iterator<MemoContent> iter = memo.getMemoContents().iterator();
+            while (iter.hasNext()) {
+                MemoContent memoContent = (MemoContent)iter.next();
+                memoContent.setSequence(tmpSeq);
+                tmpSeq++;
+                insertValues = new ContentValues();
+                insertValues.put("sequence", memoContent.getSequence());
+                insertValues.put("memo_id", memo.getId());
+                insertValues.put("content", memoContent.getContent());
+                insertValues.put("content_type", memoContent.getContentType().ordinal());
+
+                long contentRowId = sqlDB.insert("memo_content_tbl", null,
+                        insertValues);
+                memoContent.setMemo_id(memo.getId());
             }
         } catch (SQLiteException ex) {
             ex.printStackTrace();
