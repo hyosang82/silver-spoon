@@ -62,7 +62,9 @@ public class DBManager {
     //TODO: get memo by ID
     public Memo getMemoById(final int id) {
         Memo result = new Memo();
-        String query = "SELECT id,created_date, update_date, sequence, content, content_type FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id where memo_tbl.id='"+ id +"';";
+        String query = "SELECT id,created_date, update_date, sequence, content, content_type " +
+                "FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id " +
+                "where memo_tbl.id='"+ id +"' ORDER BY sequence asc;";
         SQLiteDatabase sqlDB = null;
         if(MConstants.isDEBUG)
             Log.i(TAG, "getMemoById() start");
@@ -119,7 +121,8 @@ public class DBManager {
     public List<Memo> getMemoList() {
         List<Memo> result = new ArrayList<Memo>();
         String query = "SELECT id,created_date, update_date, sequence, content, content_type " +
-                "FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id;";
+                "FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id" +
+                "ORDER BY created_date desc, sequence asc;";
         SQLiteDatabase sqlDB = null;
         if(MConstants.isDEBUG)
             Log.i(TAG, "getMemoList() start");
@@ -199,11 +202,10 @@ public class DBManager {
                 memo.setId((int)rowId);
                 result = true;
                 //TODO: Insert MemoContents
-                Set<Integer> set = memo.getMemoContents().keySet();
                 int tmpSeq = 0;
-                Iterator<Integer> iter = set.iterator();
+                Iterator<MemoContent> iter = memo.getMemoContents().iterator();
                 while (iter.hasNext()) {
-                    MemoContent memoContent = memo.getMemoContents().get(iter.next());
+                    MemoContent memoContent = (MemoContent)iter.next();
                     memoContent.setSequence(tmpSeq);
                     tmpSeq++;
                     insertValues = new ContentValues();

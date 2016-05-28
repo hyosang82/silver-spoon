@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-        mFab.setBackgroundTintList(ColorStateList.valueOf(ThemeUtil.getMainColor(this, ThemeUtil.getTheme(this))));
+        mFab.setBackgroundTintList(ColorStateList.valueOf(ThemeUtil.getSystemColor(this, ThemeUtil.getTheme(this))));
         setActionBarColor(ThemeUtil.getTheme(this));
     }
 
@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setNavigationBarColor(ThemeUtil.getMainColor(this, midasTheme));
             getWindow().setStatusBarColor(ThemeUtil.getSystemColor(this, midasTheme));
         }
-        mFab.setBackgroundTintList(ColorStateList.valueOf(ThemeUtil.getMainColor(this, ThemeUtil.getTheme(this))));
+        mFab.setBackgroundTintList(ColorStateList.valueOf(ThemeUtil.getSystemColor(this, ThemeUtil.getTheme(this))));
     }
 
 }
