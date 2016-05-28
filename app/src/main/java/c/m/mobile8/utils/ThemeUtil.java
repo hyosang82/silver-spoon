@@ -23,7 +23,9 @@ public class ThemeUtil {
     public static void setTheme(Context context, MIDAS_THEME theme) {
         SharedPreferenceManager.setPreferenceTheme(context, theme);
     }
-
+    public static int getThemeMainColor(Context context, MIDAS_THEME theme) {
+        return getMainColor(context, theme);
+    }
     public static int getMainColor(Context context, MIDAS_THEME theme) {
         int mainColor = Color.parseColor("#FF000000");
         switch (theme) {
@@ -76,7 +78,9 @@ public class ThemeUtil {
 
         return mainColor;
     }
-
+    public static int getThemeSystemColor(Context context, MIDAS_THEME theme) {
+        return getSystemColor(context, theme);
+    }
     public static int getSystemColor(Context context, MIDAS_THEME theme) {
         int systemColor = Color.parseColor("#FF000000");
         switch (theme) {
