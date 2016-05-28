@@ -19,6 +19,9 @@ import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,6 +48,8 @@ import c.m.mobile8.adapter.MemoDetailAdapter;
 import c.m.mobile8.adapter.MemoTextViewHolder;
 import c.m.mobile8.dialog.DialogBase;
 import c.m.mobile8.dialog.NewMemoItemDialog;
+import c.m.mobile8.dialog.SettingThemeDialogFragment;
+import c.m.mobile8.fragments.ConfigFragment;
 import c.m.mobile8.models.Memo;
 import c.m.mobile8.models.MemoContent;
 import c.m.mobile8.models.enums.ContentType;
@@ -52,7 +57,7 @@ import c.m.mobile8.utils.DBManager;
 import c.m.mobile8.utils.ImageDecoder;
 import c.m.mobile8.utils.ThemeUtil;
 
-public class ViewActivity extends AppCompatActivity {
+public class ViewActivity extends AppCompatActivity implements SettingThemeDialogFragment.OnThemeItemClickListener {
     private static final int REQUEST_CODE_PICK_PHOTO = 0x01;
 
     private static final int MSG_FOCUS_EDITTEXT = 0x01;
@@ -67,6 +72,7 @@ public class ViewActivity extends AppCompatActivity {
     private FloatingActionButton mBtnAdd;
     private Menu mMenu;
     private CoordinatorLayout mCoordinatorLayout;
+    private ThemeUtil.MIDAS_THEME theme = ThemeUtil.MIDAS_THEME.THEME_BLACK;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,6 +154,16 @@ public class ViewActivity extends AppCompatActivity {
                 break;
             case R.id.action_item_cancel:
                 onBackPressed();
+                break;
+            case R.id.action_item_theme:
+                FragmentManager fm = getSupportFragmentManager();
+                FragmentTransaction tr = fm.beginTransaction();
+                Fragment prev = fm.findFragmentByTag("SettingThemeDialogFragment");
+                if (prev != null) {
+                    tr.remove(prev);
+                }
+                SettingThemeDialogFragment dialog = new SettingThemeDialogFragment(this);
+                dialog.show(tr, "SettingThemeDialogFragment");
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -251,7 +267,7 @@ public class ViewActivity extends AppCompatActivity {
 
     private void saveAndExit() {
         Memo memo = new Memo();
-
+        memo.setTheme(theme.ordinal());
         for(MemoContent m : mAdapter.getAllList()) {
             if(m.getContent().length() == 0) {
                 continue;
@@ -362,6 +378,11 @@ public class ViewActivity extends AppCompatActivity {
         }
 
     };
+
+    @Override
+    public void onClickTheme(ThemeUtil.MIDAS_THEME busTheme) {
+        theme = busTheme;
+    }
 
     private class SaveTask extends AsyncTask<Void, Void, Boolean> {
         private HashMap<MemoContent, String> mNewPath;

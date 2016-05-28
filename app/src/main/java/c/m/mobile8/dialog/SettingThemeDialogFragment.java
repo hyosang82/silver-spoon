@@ -27,9 +27,16 @@ public class SettingThemeDialogFragment extends DialogFragment {
     private ViewHolder mViewHolder;
     private SettingThemeResultListAdapter mThemeListAdapter;
     private OnThemeItemClickListener onThemeItemClickListener;
+    private boolean isActivityMode = false;
+    private ThemeUtil.MIDAS_THEME activityBasedTheme;
 
     public SettingThemeDialogFragment(OnThemeItemClickListener themeItemClickListener) {
         onThemeItemClickListener = themeItemClickListener;
+    }
+    public SettingThemeDialogFragment(OnThemeItemClickListener themeItemClickListener, boolean isActivityMode, ThemeUtil.MIDAS_THEME activityBasedTheme) {
+        onThemeItemClickListener = themeItemClickListener;
+        this.isActivityMode = isActivityMode;
+        this.activityBasedTheme = activityBasedTheme;
     }
 
     @Override
@@ -55,7 +62,9 @@ public class SettingThemeDialogFragment extends DialogFragment {
         for (ThemeUtil.MIDAS_THEME busTheme : ThemeUtil.MIDAS_THEME.values()) {
             busThemeList.add(busTheme);
         }
-
+        if(isActivityMode) {
+            mThemeListAdapter = new SettingThemeResultListAdapter(getActivity(), busThemeList, activityBasedTheme );
+        }
         if (mThemeListAdapter == null) {
             mThemeListAdapter = new SettingThemeResultListAdapter(getActivity(), busThemeList, ThemeUtil.getTheme(getActivity()));
         }
