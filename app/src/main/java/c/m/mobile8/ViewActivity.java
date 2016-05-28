@@ -83,6 +83,7 @@ public class ViewActivity extends AppCompatActivity {
         mMemoView.setAdapter(mAdapter);
 
         getSupportActionBar().setTitle("메모 보기");
+
         findViewById(R.id.btn_cancel).setOnClickListener(mButtonListener);
         findViewById(R.id.btn_save).setOnClickListener(mButtonListener);
 
@@ -345,7 +346,7 @@ public class ViewActivity extends AppCompatActivity {
 
         @Override
         public void onImageLongClicked(View v) {
-            Log.e("ViewActivity", "longclick");
+
         }
 
     };
