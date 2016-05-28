@@ -7,6 +7,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 
 import java.util.Calendar;
 
@@ -18,11 +19,16 @@ public class MemoListActivity extends AppCompatActivity {
     private long mCurrTimeInMillis = 0;
     private static final int MSG_TIMER_EXPIRED = 1;
     private CoordinatorLayout mCoordinatorLayout;
+
+    RecyclerView memoList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mCoordinatorLayout = (CoordinatorLayout)findViewById(R.id.coordinatorLayout);
+
+
     }
 
 
