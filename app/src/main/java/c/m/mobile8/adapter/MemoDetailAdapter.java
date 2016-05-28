@@ -107,8 +107,10 @@ public class MemoDetailAdapter extends RecyclerView.Adapter<ViewHolderBase> {
 
         if(item != null) {
             switch(item.getContentType()) {
-                case CONTENT_TYPE_IMAGE: return VIEW_TYPE_MEMO_IMAGE;
-                case CONTENT_TYPE_TEXT: return VIEW_TYPE_MEMO_TEXT;
+                case CONTENT_TYPE_IMAGE:
+                    return VIEW_TYPE_MEMO_IMAGE;
+                case CONTENT_TYPE_TEXT:
+                    return VIEW_TYPE_MEMO_TEXT;
             }
         }
 
@@ -133,12 +135,8 @@ public class MemoDetailAdapter extends RecyclerView.Adapter<ViewHolderBase> {
         return mList.size();
     }
 
-    public void setData(Memo memo) {
-        List<MemoContent> conts = memo.getMemoContents();
-
-        for(MemoContent m : conts) {
-            mList.add(m);
-        }
+    public void setData(List<MemoContent> memoContents) {
+        mList = memoContents;
     }
 
     public List<MemoContent> getAllList() {
