@@ -3,10 +3,15 @@ package c.m.mobile8;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.GestureDetectorCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 
 import java.io.FileInputStream;
@@ -23,6 +28,10 @@ public class FullImageActivity extends Activity {
 
     private String mImageLocation;
     private ImageView mFullImage;
+    private GestureDetectorCompat mGestureDetector;
+    private boolean mbZoomed = false;
+    private int dx = 0;
+    private int dy = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +42,39 @@ public class FullImageActivity extends Activity {
         mFullImage = (ImageView) findViewById(R.id.full_image);
 
         mImageLocation = getIntent().getStringExtra(EXTRA_IMAGE_LOCATION);
+
+        mFullImage.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mGestureDetector.onTouchEvent(event);
+
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+        mGestureDetector = new GestureDetectorCompat(this, mGestureListener);
+        mGestureDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                mbZoomed = !mbZoomed;
+                setMatrix();
+                return false;
+            }
+
+            @Override
+            public boolean onDoubleTapEvent(MotionEvent e) {
+                return false;
+            }
+        });
     }
 
     @Override
@@ -74,6 +116,17 @@ public class FullImageActivity extends Activity {
         return false;
     }
 
+    private void setMatrix() {
+        Matrix m = new Matrix();
+        if(mbZoomed) {
+            m.setScale(2.0f, 2.0f);
+            Log.d("TEST", "x = " + mFullImage.getTranslationX());
+            m.postTranslate(dx, dy);
+        }
+
+        mFullImage.setImageMatrix(m);
+    }
+
     private InputStream getInputStream() throws FileNotFoundException {
         if(mImageLocation.startsWith("content://")) {
             //ContentResolver
@@ -102,4 +155,17 @@ public class FullImageActivity extends Activity {
 
         return sampleSize;
     }
+
+    private GestureDetector.SimpleOnGestureListener mGestureListener = new GestureDetector.SimpleOnGestureListener() {
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            //Log.d("TEST", "Scroll x=" + distanceX + ", y=" + distanceY);
+            dx -= distanceX;
+            dy -= distanceY;
+
+            setMatrix();
+
+            return super.onScroll(e1, e2, distanceX, distanceY);
+        }
+    };
 }
