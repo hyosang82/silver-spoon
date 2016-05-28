@@ -109,7 +109,7 @@ public class ViewActivity extends AppCompatActivity {
         }else {
             //load
             Memo memo = DBManager.getInstance(this).getMemoById(mMemoId);
-            mAdapter.setData(memo);
+            mAdapter.setData(memo.getMemoContents());
             mAdapter.notifyDataSetChanged();
 
             String title = getMemoTitle();
