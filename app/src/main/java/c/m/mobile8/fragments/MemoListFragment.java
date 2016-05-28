@@ -31,6 +31,7 @@ public class MemoListFragment extends Fragment {
     private ListView listViewMemoList;
     private MemoListViewAdapter memoListViewAdapter;
     private List<Memo> memoList;
+    private TextView textViewNoMemo;
 
     public MemoListFragment() {
         // Required empty public constructor
@@ -40,23 +41,9 @@ public class MemoListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_memo_list, container, false);
-
-        /*
-        Date date = new Date();
-        Memo memo = new Memo(2, date.getTime(), date.getTime());
-        memo.addMemoContent(new MemoContent(0, 2, "test1", ContentType.CONTENT_TYPE_TEXT));
-        memo.addMemoContent(new MemoContent(1, 2, "test2", ContentType.CONTENT_TYPE_IMAGE));
-        DBManager.getInstance(getActivity().getApplicationContext()).insertMemo(memo);
-        */
-
+        textViewNoMemo = (TextView)rootView.findViewById(R.id.textViewNoMemo);
         memoList = DBManager.getInstance(getActivity().getApplicationContext()).getMemoList();
-
-        TextView textViewNoMemo = (TextView)rootView.findViewById(R.id.textViewNoMemo);
-        if(memoList.size() == 0) {
-            textViewNoMemo.setText("표시할 메모가 없습니다.");
-        } else {
-            textViewNoMemo.setVisibility(View.GONE);
-        }
+        setTextNoMemo();
 
         listViewMemoList = (ListView)rootView.findViewById(R.id.listViewMemoList);
         memoListViewAdapter = new MemoListViewAdapter(getActivity().getApplicationContext(), memoList);
@@ -104,8 +91,17 @@ public class MemoListFragment extends Fragment {
 
     public void reloadData() {
         memoList = DBManager.getInstance(getActivity().getApplicationContext()).getMemoList();
+        setTextNoMemo();
         memoListViewAdapter = new MemoListViewAdapter(getActivity().getApplicationContext(), memoList);
         listViewMemoList.setAdapter(memoListViewAdapter);
+    }
+    private void setTextNoMemo() {
+        if(memoList.size() == 0) {
+            textViewNoMemo.setVisibility(View.VISIBLE);
+            textViewNoMemo.setText("표시할 메모가 없습니다.");
+        } else {
+            textViewNoMemo.setVisibility(View.GONE);
+        }
     }
 
     @Override
