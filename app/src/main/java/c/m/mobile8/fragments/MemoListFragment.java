@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,9 @@ public class MemoListFragment extends Fragment {
         setTextNoMemo(memoList.size());
 
         listViewMemoList = (ListView)rootView.findViewById(R.id.listViewMemoList);
-        memoListViewAdapter = new MemoListViewAdapter(getActivity().getApplicationContext(), memoList);
+        if(memoListViewAdapter == null) {
+            memoListViewAdapter = new MemoListViewAdapter(getActivity().getApplicationContext(), memoList);
+        }
         listViewMemoList.setAdapter(memoListViewAdapter);
 
         listViewMemoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -65,7 +68,7 @@ public class MemoListFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 List<Memo> memoList = ((MainActivity)getActivity()).mMemoList;
                                 DBManager.getInstance(getActivity().getApplicationContext()).deleteMemo(memoList.get(position).getId());
-                                reloadData();
+                                ((MainActivity)getActivity()).reloadData();
                             }
                         })
                     .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -82,17 +85,20 @@ public class MemoListFragment extends Fragment {
         });
         return rootView;
     }
+
     public void reloadData() {
         List<Memo> memoList = ((MainActivity)getActivity()).mMemoList;
         setTextNoMemo(memoList.size());
-        memoListViewAdapter = new MemoListViewAdapter(getActivity().getApplicationContext(), memoList);
-        listViewMemoList.setAdapter(memoListViewAdapter);
+        if(memoListViewAdapter != null) {
+            memoListViewAdapter.setMemoList(memoList);
+            memoListViewAdapter.notifyDataSetChanged();
+        }
     }
+
     @Override
     public void onResume() {
         super.onResume();
     }
-
 
     private void setTextNoMemo(int size) {
         if(size == 0) {
