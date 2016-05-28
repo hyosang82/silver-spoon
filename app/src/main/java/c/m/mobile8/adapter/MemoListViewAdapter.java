@@ -1,6 +1,7 @@
 package c.m.mobile8.adapter;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import c.m.mobile8.R;
 import c.m.mobile8.models.Memo;
 import c.m.mobile8.models.MemoContent;
 import c.m.mobile8.models.enums.ContentType;
+import c.m.mobile8.utils.ThemeUtil;
 
 /**
  * Created by kdggg on 2016-05-28.
@@ -82,7 +84,7 @@ public class MemoListViewAdapter extends BaseAdapter {
         }
 
         if(isSelected[position]) {
-            convertView.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+            convertView.setBackgroundColor(ThemeUtil.getMainColor(context, ThemeUtil.getTheme(context)));
         } else {
             convertView.setBackground(null);
         }
