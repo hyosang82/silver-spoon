@@ -29,12 +29,10 @@ public class MemoListViewAdapter extends BaseAdapter {
     private final String TAG = "MemoListViewAdapter";
     private Context context;
     private List<Memo> memoList;
-    private boolean[] isSelected;
 
     public MemoListViewAdapter(Context context, List<Memo> memoList) {
         this.context = context;
         this.memoList = memoList;
-        this.isSelected = new boolean[this.memoList.size()];
     }
 
     @Override
@@ -43,11 +41,6 @@ public class MemoListViewAdapter extends BaseAdapter {
     public Object getItem(int position) {return position;}
     @Override
     public long getItemId(int position) {return position;}
-
-    public void setSelected(boolean[] isSelected) {
-        this.isSelected = isSelected;
-        this.notifyDataSetChanged();
-    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
