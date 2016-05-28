@@ -19,6 +19,16 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme"></activity>
+
+        <activity
+            android:name=".MemoListActivity"
+            android:theme="@style/AppTheme">
+        </activity>
+
+        <activity
+            android:name=".ViewActivity"
+            android:theme="@style/AppTheme">
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

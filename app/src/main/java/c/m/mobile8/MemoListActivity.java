@@ -6,12 +6,15 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -25,12 +28,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class MemoListActivity extends AppCompatActivity {
-    //Back Key
-    private static final int BACKKEY_TIMEOUT = 2;
-    private static final int MILLIS_IN_SEC = 1000;
-    private boolean mIsBackKeyPressed = false;
-    private long mCurrTimeInMillis = 0;
-    private static final int MSG_TIMER_EXPIRED = 1;
+    private final String TAG = "MemoListActivity";
     private CoordinatorLayout mCoordinatorLayout;
 
     ListView listViewMemoList;
@@ -56,10 +54,36 @@ public class MemoListActivity extends AppCompatActivity {
         listViewMemoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //
+                //open memo
+                Log.e(TAG, "click " + position);
+            }
+        });
+        listViewMemoList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                //memo menu dialog
+                Log.e(TAG, "long click " + position);
+
+                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MemoListActivity.this);
+                alertDialogBuilder.setTitle("memo " + position);
+                alertDialogBuilder.setMessage("menu");
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+
+                return true;
             }
         });
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        if (fab != null) {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //new memo
+                    Log.e(TAG, "add new memo");
+                }
+            });
+        }
     }
 
     private class MemoListViewAdapter extends BaseAdapter {
@@ -99,47 +123,32 @@ public class MemoListActivity extends AppCompatActivity {
         public TextView textViewMemoTitle;
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_memo_list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     //implements Back key pressed
     @Override
     public void onBackPressed() {
-        exitApp();
+        finish();
     }
 
-    public void exitApp() {
-        if (mIsBackKeyPressed == false) {
-            mIsBackKeyPressed = true;
-
-            mCurrTimeInMillis = Calendar.getInstance().getTimeInMillis();
-            Snackbar snackbar = Snackbar.make(mCoordinatorLayout, "\"Back key\"를 한번 더 누르시면 종료됩니다.", Snackbar.LENGTH_SHORT);
-            snackbar.show();
-//            showWarningToast("\"Back key\"를 한번 더 누르시면 종료됩니다.");
-            startTimer();
-        } else {
-            mIsBackKeyPressed = false;
-
-            if (Calendar.getInstance().getTimeInMillis() <= (mCurrTimeInMillis + (BACKKEY_TIMEOUT * MILLIS_IN_SEC))) {
-                // super.onBackPressed(); // or call finish..
-                moveTaskToBack(true);
-                finish();
-                android.os.Process.killProcess(android.os.Process.myPid());
-            }
-        }
-    }
-    private void startTimer() {
-        mTimerHandler.sendEmptyMessageDelayed(MSG_TIMER_EXPIRED,
-                BACKKEY_TIMEOUT * MILLIS_IN_SEC);
-    }
-
-    private Handler mTimerHandler = new Handler() {
-        public void handleMessage(Message msg) {
-
-            switch (msg.what) {
-                case MSG_TIMER_EXPIRED: {
-                    mIsBackKeyPressed = false;
-                }
-                break;
-            }
-        }
-    };
 }
