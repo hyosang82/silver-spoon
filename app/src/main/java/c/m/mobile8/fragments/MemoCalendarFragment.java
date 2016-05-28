@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
@@ -50,9 +51,19 @@ public class MemoCalendarFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_memo_calendar, container, false);
 
         mCalendar = (CompactCalendarView) rootView.findViewById(R.id.calendar_view);
+        ListView listView = (ListView)rootView.findViewById(R.id.calendar_listview);
+
         if(mMemoListViewAdapter == null) {
             mMemoListViewAdapter = new MemoListViewAdapter(getActivity(), new ArrayList<Memo>());
         }
+        List<Memo> memoList = ((MainActivity)getActivity()).mMemoList;
+        Iterator<Memo> iter = memoList.iterator();
+        while(iter.hasNext()) {
+            Memo memo = iter.next();
+            mCalendar.addEvent(new Event(Color.argb(255, 255, 255, 255), memo.getCreatedDate(), memo), false);
+        }
+        listView.setAdapter(mMemoListViewAdapter);
+        mMemoListViewAdapter.notifyDataSetChanged();
         mTextView = (TextView) rootView.findViewById(R.id.calendar_month_textview);
         initCalendar();
         return rootView;
@@ -62,16 +73,7 @@ public class MemoCalendarFragment extends Fragment {
         mCalendar.setCalendarBackgroundColor(ThemeUtil.getMainColor(getActivity(), ThemeUtil.getTheme(getActivity())));
         mCalendar.setCurrentSelectedDayBackgroundColor(ThemeUtil.getSystemColor(getActivity(), ThemeUtil.getTheme(getActivity())));
 
-        List<Memo> memoList = ((MainActivity)getActivity()).mMemoList;
-        Iterator<Memo> iter = memoList.iterator();
-        while(iter.hasNext()) {
-            Memo memo = iter.next();
-            mCalendar.addEvent(new Event(Color.argb(255, 255, 255, 255), memo.getCreatedDate(), memo), false);
-        }
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, 1000);
         mCalendar.invalidate();
-        mCalendar.setCurrentDate(calendar.getTime());
         mTextView.setBackgroundColor(ThemeUtil.getMainColor(getActivity(), ThemeUtil.getTheme(getActivity())));
         mTextView.setText(dateFormatForMonth.format(mCalendar.getFirstDayOfCurrentMonth()));
         mCalendar.setListener(new CompactCalendarView.CompactCalendarViewListener() {
