@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import c.m.mobile8.R;
 import c.m.mobile8.models.MemoContent;
+import c.m.mobile8.utils.ImageDecoder;
 
 /**
  * Created by Hyosang on 2016-05-28.
@@ -22,6 +23,6 @@ public class MemoImageViewHolder extends ViewHolderBase{
 
     @Override
     public void setData(MemoContent content) {
-        mImageView.setImageURI(Uri.parse(content.getContent()));
+        ImageDecoder.getInstance().decode(content.getContent(), mImageView);
     }
 }

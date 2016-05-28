@@ -28,6 +28,7 @@ import c.m.mobile8.models.Memo;
 import c.m.mobile8.models.MemoContent;
 import c.m.mobile8.models.enums.ContentType;
 import c.m.mobile8.utils.DBManager;
+import c.m.mobile8.utils.ImageDecoder;
 
 public class ViewActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_PICK_PHOTO = 0x01;
@@ -44,6 +45,9 @@ public class ViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view);
+
+        //init
+        ImageDecoder.getInstance().setContext(this);
 
         CoordinatorLayout mainLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
         mMemoView = (RecyclerView) findViewById(R.id.memo_view);
