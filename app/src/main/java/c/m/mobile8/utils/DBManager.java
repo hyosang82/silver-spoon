@@ -122,7 +122,7 @@ public class DBManager {
         List<Memo> result = new ArrayList<Memo>();
         String query = "SELECT id,created_date, update_date, sequence, content, content_type " +
                 "FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id" +
-                "ORDER BY created_date desc, sequence asc;";
+                " ORDER BY created_date desc, sequence asc;";
         SQLiteDatabase sqlDB = null;
         if(MConstants.isDEBUG)
             Log.i(TAG, "getMemoList() start");
