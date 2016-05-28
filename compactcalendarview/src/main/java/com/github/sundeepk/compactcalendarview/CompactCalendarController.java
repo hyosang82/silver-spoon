@@ -753,6 +753,7 @@ class CompactCalendarController {
                 boolean isCurrentSelectedDay = currentCalender.get(Calendar.DAY_OF_MONTH) == dayOfMonth;
 
                 /*if (!isSameDayAsCurrentDay && !isCurrentSelectedDay || animationStatus == EXPOSE_CALENDAR_ANIMATION) {*/
+                if(!isCurrentSelectedDay) {
                     if (eventsList.size() >= 3) {
                         drawEventsWithPlus(canvas, xPosition, yPosition, eventsList);
                     } else if (eventsList.size() == 2) {
@@ -760,6 +761,7 @@ class CompactCalendarController {
                     } else if (eventsList.size() == 1) {
                         drawSingleEvent(canvas, xPosition, yPosition, eventsList);
                     }
+                }
                 /*}*/
             }
         }
