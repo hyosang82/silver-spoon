@@ -1,6 +1,7 @@
 package c.m.mobile8;
 
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
@@ -36,7 +37,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mCoordinatorLayout = (CoordinatorLayout)findViewById(R.id.coordinatorLayout);
         initDataBase();
-        testCode();
+
+        Intent i = new Intent(this, MemoListActivity.class);
+        startActivity(i);
+        finish();
+
+        //testCode();
     }
 
 

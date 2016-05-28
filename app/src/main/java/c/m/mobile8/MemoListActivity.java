@@ -2,6 +2,7 @@ package c.m.mobile8;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
@@ -88,6 +89,7 @@ public class MemoListActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     //new memo
                     Log.e(TAG, "add new memo");
+                    enterDetailView(-1);
                 }
             });
         }
@@ -149,6 +151,12 @@ public class MemoListActivity extends AppCompatActivity {
     }
     private class ViewHolder {
         public TextView textViewMemoTitle;
+    }
+
+    private void enterDetailView(int memoId) {
+        Intent i = new Intent(this, ViewActivity.class);
+        i.putExtra(ViewActivity.EXTRA_MEMO_ID, memoId);
+        startActivity(i);
     }
 
     @Override

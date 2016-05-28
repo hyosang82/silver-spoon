@@ -9,6 +9,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -117,7 +118,8 @@ public class DBManager {
     //TODO: get memo list
     public List<Memo> getMemoList() {
         List<Memo> result = new ArrayList<Memo>();
-        String query = "SELECT id,created_date, update_date, sequence, content, content_type FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id;";
+        String query = "SELECT id,created_date, update_date, sequence, content, content_type " +
+                "FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id;";
         SQLiteDatabase sqlDB = null;
         if(MConstants.isDEBUG)
             Log.i(TAG, "getMemoList() start");
@@ -198,9 +200,12 @@ public class DBManager {
                 result = true;
                 //TODO: Insert MemoContents
                 Set<Integer> set = memo.getMemoContents().keySet();
+                int tmpSeq = 0;
                 Iterator<Integer> iter = set.iterator();
                 while (iter.hasNext()) {
                     MemoContent memoContent = memo.getMemoContents().get(iter.next());
+                    memoContent.setSequence(tmpSeq);
+                    tmpSeq++;
                     insertValues = new ContentValues();
                     insertValues.put("sequence", memoContent.getSequence());
                     insertValues.put("memo_id", rowId);
@@ -253,4 +258,94 @@ public class DBManager {
     }
 
     //TODO: Update Memo
+
+
+    //TODO: searchMemo
+    public List<Memo> searchMemo(String word) {
+        List<Memo> result = new ArrayList<Memo>();
+        String query = "SELECT id,created_date, update_date, sequence, content, content_type " +
+                "FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id " +
+                "WHERE memo_content_tbl.content LIKE '%"+word+"%' AND memo_content_tbl.content_type=0;";
+        SQLiteDatabase sqlDB = null;
+        if(MConstants.isDEBUG)
+            Log.i(TAG, "getMemoList() start");
+        try {
+            sqlDB = dbHelper.openReadOnlyDataBase();
+            Cursor cursor = null;
+            try {
+                cursor = sqlDB.rawQuery(query, null);
+                if (cursor.moveToFirst()) {
+                    if (cursor != null && cursor.getCount() > 0) {
+                        cursor.moveToPosition(-1);
+                        int currentMemoId = -1;
+                        Memo memo = null;
+                        while (cursor.moveToNext()) {
+                            // memo value
+                            int memoId = cursor.getInt(0);
+                            long created_date = cursor.getLong(1);
+                            long update_date = cursor.getLong(2);
+                            if(currentMemoId == -1 || currentMemoId != memoId) {
+                                memo = new Memo(memoId, created_date, update_date);
+                                result.add(memo);
+                                currentMemoId = memoId;
+                            }
+                            //memo contents value
+                            int sequence = cursor.getInt(3);
+                            String content = cursor.getString(4);
+                            ContentType contentType = ContentType.values()[cursor.getInt(5)];
+                            memo.addMemoContent(new MemoContent(sequence, memoId, content, contentType));
+
+                        }
+                    }
+                }
+            } catch (SQLiteException ex) {
+                Log.e(TAG, ex.toString());
+                ex.printStackTrace();
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+        } catch (SQLiteException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (sqlDB != null) {
+                sqlDB.close();
+            }
+            if(MConstants.isDEBUG)
+                Log.i(TAG, "getMemoList() end");
+        }
+        return result;
+    }
+    //TODO update Content by memo_id and sequence
+    public boolean updateContentByMemoIdAndSeq(Memo memo, MemoContent memoContent) {
+        boolean result = false;
+        SQLiteDatabase sqlDB = null;
+
+        try {
+            sqlDB = dbHelper.openReadWriteDataBase();
+            //memo update
+            ContentValues updateValues = new ContentValues();
+            Date date = new Date();
+            updateValues.put("update_date", date.getTime());
+            String[] memoWhereArgs = { "" + memo.getId() };
+            sqlDB.update("memo_tbl", updateValues, "memo_id=?", memoWhereArgs);
+            //memo content update
+            ContentValues updateMemoContentValues = new ContentValues();
+            updateMemoContentValues.put("content", memoContent.getContent());
+            updateMemoContentValues.put("content_type", memoContent.getContentType().ordinal());
+            String[] memoContentWhereArgs = { "" + memoContent.getMemo_id(), "" + memoContent.getSequence() };
+            sqlDB.update("memo_content_tbl", updateMemoContentValues,"memo_id=? AND sequence=?", memoContentWhereArgs);
+            result = true;
+        } catch (SQLiteException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (sqlDB != null) {
+                sqlDB.close();
+            }
+        }
+
+        return result;
+    }
+
 }

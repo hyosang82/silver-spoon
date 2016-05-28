@@ -6,4 +6,6 @@ package c.m.mobile8.models.enums;
 public enum ContentType {
     CONTENT_TYPE_TEXT,
     CONTENT_TYPE_IMAGE,
+    CONTENT_TYPE_AUDIO,
+    CONTENT_TYPE_VIDIO,
 }

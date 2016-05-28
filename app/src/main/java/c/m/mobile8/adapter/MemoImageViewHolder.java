@@ -1,7 +1,9 @@
 package c.m.mobile8.adapter;
 
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import c.m.mobile8.R;
@@ -10,16 +12,16 @@ import c.m.mobile8.models.MemoContent;
 /**
  * Created by Hyosang on 2016-05-28.
  */
-public class MemoTextViewHolder extends ViewHolderBase{
-    public TextView mTextView;
-    public MemoTextViewHolder(View itemView) {
+public class MemoImageViewHolder extends ViewHolderBase{
+    public ImageView mImageView;
+    public MemoImageViewHolder(View itemView) {
         super(itemView);
 
-        mTextView = (TextView) itemView.findViewById(R.id.memo_text);
+        mImageView = (ImageView) itemView.findViewById(R.id.memo_image);
     }
 
     @Override
     public void setData(MemoContent content) {
-        mTextView.setText(content.getContent());
+        mImageView.setImageURI(Uri.parse(content.getContent()));
     }
 }

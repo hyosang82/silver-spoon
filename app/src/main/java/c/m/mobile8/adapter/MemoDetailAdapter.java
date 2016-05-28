@@ -17,28 +17,68 @@ import c.m.mobile8.models.MemoContent;
 /**
  * Created by Hyosang on 2016-05-28.
  */
-public class MemoDetailAdapter extends RecyclerView.Adapter<MemoTextViewHolder> {
+public class MemoDetailAdapter extends RecyclerView.Adapter<ViewHolderBase> {
+    private static final int VIEW_TYPE_MEMO_TEXT = 0x01;
+    private static final int VIEW_TYPE_MEMO_IMAGE = 0x02;
+
     private List<MemoContent> mList = new ArrayList<MemoContent>();
 
     @Override
-    public MemoTextViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.memo_item_text, parent, false);
+    public ViewHolderBase onCreateViewHolder(ViewGroup parent, int viewType) {
+        int layout = R.layout.memo_item_text;
+        Class<? extends ViewHolderBase> vhClass = null;
 
-        MemoTextViewHolder vh = new MemoTextViewHolder(v);
-        return vh;
-    }
+        switch(viewType) {
+            case VIEW_TYPE_MEMO_TEXT:
+                layout = R.layout.memo_item_text;
+                vhClass = MemoTextViewHolder.class;
+                break;
 
-    @Override
-    public void onBindViewHolder(MemoTextViewHolder holder, int position) {
-        MemoContent item = mList.get(position);
+            case VIEW_TYPE_MEMO_IMAGE:
+                layout = R.layout.memo_item_image;
+                vhClass = MemoImageViewHolder.class;
+                break;
+        }
 
-        if(item != null) {
-            holder.mTextView.setText(item.getContent());
+        View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
+
+        try {
+            return vhClass.getConstructor(View.class).newInstance(v);
+        }catch(Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
-    public void addItem(MemoContent item) {
-        mList.add(item);
+    @Override
+    public void onBindViewHolder(ViewHolderBase holder, int position) {
+        MemoContent item = mList.get(position);
+
+        if(item != null) {
+            holder.setData(item);
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        MemoContent item = mList.get(position);
+
+        if(item != null) {
+            switch(item.getContentType()) {
+                case CONTENT_TYPE_IMAGE: return VIEW_TYPE_MEMO_IMAGE;
+                case CONTENT_TYPE_TEXT: return VIEW_TYPE_MEMO_TEXT;
+            }
+        }
+
+        return VIEW_TYPE_MEMO_TEXT;
+    }
+
+    public int addItem(MemoContent item) {
+        if(mList.add(item)) {
+            return mList.size() - 1;
+        }
+
+        return -1;
     }
 
     @Override
