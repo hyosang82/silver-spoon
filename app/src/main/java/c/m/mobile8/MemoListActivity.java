@@ -25,7 +25,7 @@ public class MemoListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_memo_list);
         mCoordinatorLayout = (CoordinatorLayout)findViewById(R.id.coordinatorLayout);
 
 
