@@ -62,7 +62,7 @@ public class DBManager {
     //TODO: get memo by ID
     public Memo getMemoById(final int id) {
         Memo result = new Memo();
-        String query = "SELECT id,created_date, update_date, sequence, content, content_type " +
+        String query = "SELECT id,created_date, update_date, theme, sequence, content, content_type " +
                 "FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id " +
                 "where memo_tbl.id='"+ id +"' ORDER BY sequence asc;";
         SQLiteDatabase sqlDB = null;
@@ -77,22 +77,23 @@ public class DBManager {
                     if (cursor != null && cursor.getCount() > 0) {
                         cursor.moveToPosition(-1);
                         int currentMemoId = -1;
-                        Memo memo = null;
                         while (cursor.moveToNext()) {
                             // memo value
                             int memoId = cursor.getInt(0);
                             long created_date = cursor.getLong(1);
                             long update_date = cursor.getLong(2);
+                            int theme = cursor.getInt(3);
                             if(currentMemoId == -1 || currentMemoId != memoId) {
                                 result.setId(memoId);
                                 result.setCreatedDate(created_date);
                                 result.setUpdateDate(update_date);
+                                result.setTheme(theme);
                                 currentMemoId = memoId;
                             }
                             //memo contents value
-                            int sequence = cursor.getInt(3);
-                            String content = cursor.getString(4);
-                            ContentType contentType = ContentType.values()[cursor.getInt(5)];
+                            int sequence = cursor.getInt(4);
+                            String content = cursor.getString(5);
+                            ContentType contentType = ContentType.values()[cursor.getInt(6)];
                             result.addMemoContent(new MemoContent(sequence, memoId, content, contentType));
 
                         }
@@ -119,10 +120,20 @@ public class DBManager {
     }
     //TODO: get memo list
     public List<Memo> getMemoList() {
+        return getMemoList(false);
+    }
+    public List<Memo> getMemoList(boolean isOrderUpdateDate) {
         List<Memo> result = new ArrayList<Memo>();
-        String query = "SELECT id,created_date, update_date, sequence, content, content_type " +
-                "FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id" +
-                " ORDER BY created_date desc, sequence asc;";
+        String query = "";
+        if(isOrderUpdateDate) {
+            query = "SELECT id,created_date, update_date, theme, sequence, content, content_type " +
+                    "FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id" +
+                    " ORDER BY update_date desc, sequence asc;";
+        } else {
+            query = "SELECT id,created_date, update_date, theme, sequence, content, content_type " +
+                    "FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id" +
+                    " ORDER BY created_date desc, sequence asc;";
+        }
         SQLiteDatabase sqlDB = null;
         if(MConstants.isDEBUG)
             Log.i(TAG, "getMemoList() start");
@@ -141,15 +152,16 @@ public class DBManager {
                             int memoId = cursor.getInt(0);
                             long created_date = cursor.getLong(1);
                             long update_date = cursor.getLong(2);
+                            int theme= cursor.getInt(3);
                             if(currentMemoId == -1 || currentMemoId != memoId) {
-                                memo = new Memo(memoId, created_date, update_date);
+                                memo = new Memo(memoId, created_date, update_date, theme);
                                 result.add(memo);
                                 currentMemoId = memoId;
                             }
                             //memo contents value
-                            int sequence = cursor.getInt(3);
-                            String content = cursor.getString(4);
-                            ContentType contentType = ContentType.values()[cursor.getInt(5)];
+                            int sequence = cursor.getInt(4);
+                            String content = cursor.getString(5);
+                            ContentType contentType = ContentType.values()[cursor.getInt(6)];
                             memo.addMemoContent(new MemoContent(sequence, memoId, content, contentType));
 
                         }
@@ -188,6 +200,7 @@ public class DBManager {
 
             insertValues.put("created_date", memo.getCreatedDate());
             insertValues.put("update_date", memo.getUpdateDate());
+            insertValues.put("theme", memo.getTheme());
 
             long rowId = sqlDB.insert("memo_tbl", null,
                     insertValues);
@@ -265,12 +278,12 @@ public class DBManager {
     //TODO: searchMemo
     public List<Memo> searchMemo(String word) {
         List<Memo> result = new ArrayList<Memo>();
-        String query = "SELECT id,created_date, update_date, sequence, content, content_type " +
+        String query = "SELECT id,created_date, update_date, theme, sequence, content, content_type " +
                 "FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id " +
                 "WHERE memo_content_tbl.content LIKE '%"+word+"%' AND memo_content_tbl.content_type=0;";
         SQLiteDatabase sqlDB = null;
         if(MConstants.isDEBUG)
-            Log.i(TAG, "getMemoList() start");
+            Log.i(TAG, "searchMemo() start");
         try {
             sqlDB = dbHelper.openReadOnlyDataBase();
             Cursor cursor = null;
@@ -286,15 +299,16 @@ public class DBManager {
                             int memoId = cursor.getInt(0);
                             long created_date = cursor.getLong(1);
                             long update_date = cursor.getLong(2);
+                            int theme = cursor.getInt(3);
                             if(currentMemoId == -1 || currentMemoId != memoId) {
-                                memo = new Memo(memoId, created_date, update_date);
+                                memo = new Memo(memoId, created_date, update_date, theme);
                                 result.add(memo);
                                 currentMemoId = memoId;
                             }
                             //memo contents value
-                            int sequence = cursor.getInt(3);
-                            String content = cursor.getString(4);
-                            ContentType contentType = ContentType.values()[cursor.getInt(5)];
+                            int sequence = cursor.getInt(4);
+                            String content = cursor.getString(5);
+                            ContentType contentType = ContentType.values()[cursor.getInt(6)];
                             memo.addMemoContent(new MemoContent(sequence, memoId, content, contentType));
 
                         }
@@ -315,7 +329,7 @@ public class DBManager {
                 sqlDB.close();
             }
             if(MConstants.isDEBUG)
-                Log.i(TAG, "getMemoList() end");
+                Log.i(TAG, "searchMemo() end");
         }
         return result;
     }
