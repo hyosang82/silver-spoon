@@ -359,6 +359,11 @@ public class ViewActivity extends AppCompatActivity {
             startActivity(i);
         }
 
+        @Override
+        public void onImageLongClicked(View v) {
+            Log.e("ViewActivity", "longclick");
+        }
+
     };
 
     private class SaveTask extends AsyncTask<Void, Void, Boolean> {

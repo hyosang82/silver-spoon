@@ -33,6 +33,7 @@ public class MemoDetailAdapter extends RecyclerView.Adapter<ViewHolderBase> {
     public static interface IMemoViewListener {
         public void onDelete(int position);
         public void onImageClicked(String location);
+        public void onImageLongClicked(View v);
     }
 
     @Override
@@ -163,6 +164,12 @@ public class MemoDetailAdapter extends RecyclerView.Adapter<ViewHolderBase> {
         public void onImageClicked(String location) {
             if(mListener != null) {
                 mListener.onImageClicked(location);
+            }
+        }
+        @Override
+        public void onImageLongClicked(View v) {
+            if(mListener != null) {
+                Log.e("DetailAdapter", "longclick");
             }
         }
     };

@@ -17,6 +17,7 @@ import c.m.mobile8.utils.ImageDecoder;
 public class MemoImageViewHolder extends ViewHolderBase {
     public static interface IImageMemoListener {
         public void onImageClicked(String location);
+        public void onImageLongClicked(View v);
     }
 
     public ImageView mImageView;
@@ -38,6 +39,14 @@ public class MemoImageViewHolder extends ViewHolderBase {
                         mListener.onImageClicked(location);
                     }
                 }
+            }
+        });
+        mImageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Log.e("Holder", "longclick");
+                //
+                return true;
             }
         });
     }
