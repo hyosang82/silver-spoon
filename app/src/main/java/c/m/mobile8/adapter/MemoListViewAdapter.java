@@ -2,6 +2,8 @@ package c.m.mobile8.adapter;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +51,7 @@ public class MemoListViewAdapter extends BaseAdapter {
             holder = new ViewHolder();
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.memo_list_item, null);
+            holder.imageViewMemoTheme = (ImageView) convertView.findViewById(R.id.imageViewMemoTheme);
             holder.textViewMemoTitle = (TextView)convertView.findViewById(R.id.textViewMemoTitle);
             holder.textViewUpdateDate = (TextView)convertView.findViewById(R.id.textViewUpdateDate);
             holder.imageViewContainImage = (ImageView) convertView.findViewById(R.id.imageViewContainImage);
@@ -82,6 +85,7 @@ public class MemoListViewAdapter extends BaseAdapter {
                 isContainFile[2] = true;
             }
         }
+        //holder.imageViewMemoTheme.setBackgroundColor(ThemeUtil.getMainColor(context, memo.getTheme());
         holder.textViewUpdateDate.setText(updateDate);
         if(!content.equals("")) holder.textViewMemoTitle.setText(content);
         else holder.textViewMemoTitle.setText("(텍스트 없음)");
@@ -96,6 +100,7 @@ public class MemoListViewAdapter extends BaseAdapter {
         return convertView;
     }
     private class ViewHolder {
+        public ImageView imageViewMemoTheme;
         public TextView textViewUpdateDate;
         public TextView textViewMemoTitle;
         public ImageView imageViewContainImage;
