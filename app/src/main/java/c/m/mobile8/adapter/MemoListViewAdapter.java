@@ -86,11 +86,11 @@ public class MemoListViewAdapter extends BaseAdapter {
         if(!content.equals("")) holder.textViewMemoTitle.setText(content);
         else holder.textViewMemoTitle.setText("텍스트 없음");
 
-        if (isContainFile[0]) holder.imageViewContainImage.setVisibility(View.VISIBLE);
+        if (isContainFile[0]) holder.imageViewContainImage.setImageDrawable(context.getResources().getDrawable(android.R.drawable.ic_menu_camera));
         else holder.imageViewContainImage.setImageBitmap(null);
-        if (isContainFile[1]) holder.imageViewContainAudio.setVisibility(View.VISIBLE);
+        if (isContainFile[1]) holder.imageViewContainAudio.setImageDrawable(context.getResources().getDrawable(android.R.drawable.ic_menu_slideshow));
         else holder.imageViewContainAudio.setImageBitmap(null);
-        if (isContainFile[2]) holder.imageViewContainVideo.setVisibility(View.VISIBLE);
+        if (isContainFile[2]) holder.imageViewContainVideo.setImageDrawable(context.getResources().getDrawable(android.R.drawable.ic_btn_speak_now));
         else holder.imageViewContainVideo.setImageBitmap(null);
 
         return convertView;

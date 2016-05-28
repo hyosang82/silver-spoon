@@ -42,10 +42,11 @@ public class MemoListFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_memo_list, container, false);
         textViewNoMemo = (TextView)rootView.findViewById(R.id.textViewNoMemo);
+        listViewMemoList = (ListView)rootView.findViewById(R.id.listViewMemoList);
+
         List<Memo> memoList = ((MainActivity)getActivity()).mMemoList;
         setTextNoMemo(memoList.size());
 
-        listViewMemoList = (ListView)rootView.findViewById(R.id.listViewMemoList);
         if(memoListViewAdapter == null) {
             memoListViewAdapter = new MemoListViewAdapter(getActivity().getApplicationContext(), memoList);
         }
@@ -103,9 +104,8 @@ public class MemoListFragment extends Fragment {
     private void setTextNoMemo(int size) {
         if(size == 0) {
             textViewNoMemo.setText("표시할 메모가 없습니다.");
-            textViewNoMemo.setVisibility(View.VISIBLE);
         } else {
-            textViewNoMemo.setVisibility(View.GONE);
+            textViewNoMemo.setText("");
         }
     }
 
