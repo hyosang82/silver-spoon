@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+
 import java.util.List;
 import c.m.mobile8.R;
 import c.m.mobile8.ViewActivity;
@@ -48,6 +50,13 @@ public class MemoListFragment extends Fragment {
         */
 
         memoList = DBManager.getInstance(getActivity().getApplicationContext()).getMemoList();
+
+        TextView textViewNoMemo = (TextView)rootView.findViewById(R.id.textViewNoMemo);
+        if(memoList.size() == 0) {
+            textViewNoMemo.setText("표시할 메모가 없습니다.");
+        } else {
+            textViewNoMemo.setVisibility(View.GONE);
+        }
 
         listViewMemoList = (ListView)rootView.findViewById(R.id.listViewMemoList);
         memoListViewAdapter = new MemoListViewAdapter(getActivity().getApplicationContext(), memoList);
@@ -110,5 +119,4 @@ public class MemoListFragment extends Fragment {
         i.putExtra(ViewActivity.EXTRA_MEMO_ID, memoId);
         startActivity(i);
     }
-
 }
