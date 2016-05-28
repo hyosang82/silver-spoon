@@ -114,11 +114,12 @@ public class MemoListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        isSelectMode = false;
+
         reloadData();
     }
 
     public void reloadData() {
+        //isSelectMode = false;
         memoList = DBManager.getInstance(getActivity().getApplicationContext()).getMemoList();
         memoListViewAdapter = new MemoListViewAdapter(getActivity().getApplicationContext(), memoList);
         listViewMemoList.setAdapter(memoListViewAdapter);
@@ -127,6 +128,7 @@ public class MemoListFragment extends Fragment {
     public boolean getIsSelectMode() {
         return isSelectMode;
     }
+
     public void setIsSelectMode(boolean isSelectMode) {
         this.isSelectMode = isSelectMode;
         isSelected = new boolean[memoList.size()];

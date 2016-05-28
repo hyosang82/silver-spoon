@@ -74,6 +74,7 @@ public class MemoListViewAdapter extends BaseAdapter {
         while (iter.hasNext()) {
             MemoContent memoContent = iter.next();
             if(memoContent.getContentType() == ContentType.CONTENT_TYPE_TEXT) {
+                //if(memoContent.getContent().contains("\n")) content += memoContent.getContent().substring(0, memoContent.getContent().indexOf("\n"));
                 content += memoContent.getContent();
 
             } else if(memoContent.getContentType() == ContentType.CONTENT_TYPE_IMAGE) {
