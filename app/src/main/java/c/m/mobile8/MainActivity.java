@@ -12,6 +12,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -60,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
     private ConfigFragment mConfigFragment = new ConfigFragment();
 
     private Menu mMenu;
-    private boolean mMenuInit = true;
-    FloatingActionButton mFab;
+    private ActionBar actionBar;
+    private FloatingActionButton mFab;
 
 
     @Override
@@ -74,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
         //init memo list fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.activity_main_fragments, mMemoListFragment).commit();
+        //getSupportActionBar().setTitle("메모 목록");
+        actionBar = getSupportActionBar();
+        actionBar.setTitle("메모 목록");
         //dbtestCode();
 
         mFab = (FloatingActionButton) findViewById(R.id.fab);
@@ -155,21 +159,22 @@ public class MainActivity extends AppCompatActivity {
         //TODO : switch fragment to calendar
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.activity_main_fragments, mMemoCalendarFragment).commit();
+        if(actionBar != null) actionBar.setTitle("날짜별 메모");
         mMenu.getItem(0).setIcon(getResources().getDrawable(R.drawable.icon_list));
         mCurrentState = STATE_CALENDAR;
-
     }
     public void switchFragmentCalendarToList() {
         //TODO : switch fragment to list
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.activity_main_fragments, mMemoListFragment).commit();
+        if(actionBar != null) actionBar.setTitle("메모 목록");
         mMenu.getItem(0).setIcon(getResources().getDrawable(R.drawable.icon_calendar));
         mCurrentState = STATE_LIST;
-
     }
     public void switchFragmentDefaultToConfig() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.activity_main_fragments, mConfigFragment).commit();
+        if(actionBar != null) actionBar.setTitle("설정");
         mMenu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_x));
         mMenu.getItem(0).setVisible(false);
         mIsConfigFragment = true;
