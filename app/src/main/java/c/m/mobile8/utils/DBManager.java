@@ -231,13 +231,13 @@ public class DBManager {
             updateValues.put("update_date", memo.getUpdateDate());
             String[] whereArgs = { "" + memo.getId() };
 
-            long rowId = sqlDB.update("memo_tbl", updateValues, "memo_id=?",
+            long rowId = sqlDB.update("memo_tbl", updateValues, "id=?",
                     whereArgs);
             if(MConstants.isDEBUG) {
                 if(rowId == -1)
-                    Log.i(TAG, "insertMemo() > memo_tbl failed");
+                    Log.i(TAG, "updateMemo() > memo_tbl failed");
                 else
-                    Log.i(TAG, "insertMemo() > memo_tbl success : rowId = " + rowId);
+                    Log.i(TAG, "updateMemo() > memo_tbl success : rowId = " + rowId);
             }
             ContentValues insertValues = new ContentValues();
 
