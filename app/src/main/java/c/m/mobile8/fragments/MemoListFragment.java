@@ -54,9 +54,6 @@ public class MemoListFragment extends Fragment {
         DBManager.getInstance(getActivity().getApplicationContext()).insertMemo(memo);
         */
 
-
-
-
         memoList = DBManager.getInstance(getActivity().getApplicationContext()).getMemoList();
         Log.i(TAG, "" + memoList.size());
 
@@ -71,7 +68,6 @@ public class MemoListFragment extends Fragment {
                 if(isSelectMode) {
                     isSelected[position] = !isSelected[position];
                     memoListViewAdapter.setSelected(isSelected);
-
                 } else {
                     enterDetailView(memoList.get(position).getId());
                 }
