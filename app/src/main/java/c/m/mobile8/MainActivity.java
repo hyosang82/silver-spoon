@@ -2,6 +2,7 @@ package c.m.mobile8;
 
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Handler;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private ConfigFragment mConfigFragment = new ConfigFragment();
 
     private Menu mMenu;
+    FloatingActionButton mFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +72,9 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager.beginTransaction().replace(R.id.activity_main_fragments, mMemoListFragment).commit();
         //dbtestCode();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        if (fab != null) {
-            fab.setOnClickListener(new View.OnClickListener() {
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        if (mFab != null) {
+            mFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     //new memo
@@ -81,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+        mFab.setBackgroundTintList(ColorStateList.valueOf(ThemeUtil.getMainColor(this, ThemeUtil.getTheme(this))));
         setActionBarColor(ThemeUtil.getTheme(this));
     }
 
@@ -152,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         mMenu.getItem(1).setIcon(getResources().getDrawable(android.R.drawable.ic_menu_close_clear_cancel));
         mMenu.getItem(0).setVisible(false);
         mIsConfigFragment = true;
+        mFab.hide();
     }
     public void switchFragmentConfigToDefault() {
         switch(mCurrentState) {
@@ -165,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
         mMenu.getItem(1).setIcon(getResources().getDrawable(android.R.drawable.ic_menu_preferences));
         mMenu.getItem(0).setVisible(true);
         mIsConfigFragment = false;
+        mFab.show();
     }
     public void dbtestCode() {
         Date date = new Date();
@@ -238,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setNavigationBarColor(ThemeUtil.getMainColor(this, midasTheme));
             getWindow().setStatusBarColor(ThemeUtil.getSystemColor(this, midasTheme));
         }
+        mFab.setBackgroundTintList(ColorStateList.valueOf(ThemeUtil.getMainColor(this, ThemeUtil.getTheme(this))));
     }
 
 }
