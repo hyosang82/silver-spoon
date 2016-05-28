@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -64,7 +65,8 @@ public class MemoListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //open memo
-                Log.e(TAG, "click: " + memoList.get(position).getId() + " " + memoList.get(position).getCreatedDate() + " " +  memoList.get(position).getUpdateDate() + " " +  memoList.get(position).getMemoContents());
+                enterDetailView(memoList.get(position).getId());
+
             }
         });
         listViewMemoList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -74,9 +76,26 @@ public class MemoListActivity extends AppCompatActivity {
                 Log.e(TAG, "long click " + position);
 
                 final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MemoListActivity.this);
-                alertDialogBuilder.setTitle("memo " + position);
-                alertDialogBuilder.setMessage("menu");
+                LayoutInflater inflater = (LayoutInflater)getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View v = inflater.inflate(R.layout.dialog_memo_list_menu, null);
+                Button btnInfo = (Button)v.findViewById(R.id.buttonInfo);
+                btnInfo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //info
+                    }
+                });
+                Button btnDelete = (Button)v.findViewById(R.id.buttonDelete);
+                btnDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //delete
+                    }
+                });
+
+                alertDialogBuilder.setView(v);
                 AlertDialog alertDialog = alertDialogBuilder.create();
+
                 alertDialog.show();
 
                 return true;
