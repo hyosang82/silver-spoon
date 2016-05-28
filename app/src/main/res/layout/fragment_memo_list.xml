@@ -13,6 +13,6 @@
         android:divider="#ffffff"
         android:dividerHeight="1dp"
         android:choiceMode="singleChoice"
-        android:listSelector="@color/colorAccent"/>
+        />
 
 </android.support.design.widget.CoordinatorLayout>
