@@ -3,13 +3,21 @@ package c.m.mobile8;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +26,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import java.io.File;
@@ -38,9 +47,12 @@ import c.m.mobile8.models.MemoContent;
 import c.m.mobile8.models.enums.ContentType;
 import c.m.mobile8.utils.DBManager;
 import c.m.mobile8.utils.ImageDecoder;
+import c.m.mobile8.utils.ThemeUtil;
 
 public class ViewActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_PICK_PHOTO = 0x01;
+
+    private static final int MSG_FOCUS_EDITTEXT = 0x01;
 
     public static final String EXTRA_MEMO_ID = "extra_memo_id";
 
@@ -49,6 +61,7 @@ public class ViewActivity extends AppCompatActivity {
     private boolean mbUpdated = false;
     private int mMemoId = -1;
     private SaveTask mSaveTask = null;
+    private FloatingActionButton mBtnAdd;
 
 
     @Override
@@ -74,7 +87,9 @@ public class ViewActivity extends AppCompatActivity {
         findViewById(R.id.btn_cancel).setOnClickListener(mButtonListener);
         findViewById(R.id.btn_save).setOnClickListener(mButtonListener);
 
-        findViewById(R.id.btn_memo_item_add).setOnClickListener(new View.OnClickListener() {
+        mBtnAdd = (FloatingActionButton) findViewById(R.id.btn_memo_item_add);
+
+        mBtnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 NewMemoItemDialog dlg = new NewMemoItemDialog(ViewActivity.this);
@@ -83,17 +98,63 @@ public class ViewActivity extends AppCompatActivity {
             }
         });
 
+        mBtnAdd.setBackgroundTintList(ColorStateList.valueOf(ThemeUtil.getSystemColor(this, ThemeUtil.getTheme(this))));
+        setActionBarColor(ThemeUtil.getTheme(this));
+
         mMemoId = getIntent().getIntExtra(EXTRA_MEMO_ID, -1);
         if(mMemoId < 0) {
             //new memo
             mAdapter.addItem(new MemoContent(-1, -1, "", ContentType.CONTENT_TYPE_TEXT));
+
+            requestEditTextFocus();
         }else {
             //load
             Memo memo = DBManager.getInstance(this).getMemoById(mMemoId);
             mAdapter.setData(memo);
             mAdapter.notifyDataSetChanged();
-
         }
+    }
+
+    private void requestEditTextFocus() {
+        mHandler.sendEmptyMessageDelayed(MSG_FOCUS_EDITTEXT, 500);
+    }
+
+    private void setFocusLastEditText() {
+        View lastItem = mMemoView.getChildAt(mMemoView.getChildCount() - 1);
+        EditText et = findEditText(lastItem);
+
+        if(et != null) {
+            et.requestFocus();
+
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(et, InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
+
+    private EditText findEditText(View v) {
+        if(v instanceof ViewGroup) {
+            ViewGroup vg = (ViewGroup) v;
+            int cnt = vg.getChildCount();
+            for(int i=cnt-1;i>=0;i--) {
+                return findEditText(vg.getChildAt(i));
+            }
+        }else {
+            if(v instanceof EditText) {
+                return (EditText) v;
+            }
+        }
+
+        return null;
+    }
+
+    public void setActionBarColor(ThemeUtil.MIDAS_THEME midasTheme) {
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ThemeUtil.getMainColor(this, midasTheme)));
+        getSupportActionBar().setStackedBackgroundDrawable(new ColorDrawable(ThemeUtil.getMainColor(this, midasTheme)));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(ThemeUtil.getMainColor(this, midasTheme));
+            getWindow().setStatusBarColor(ThemeUtil.getSystemColor(this, midasTheme));
+        }
+        mBtnAdd.setBackgroundTintList(ColorStateList.valueOf(ThemeUtil.getSystemColor(this, ThemeUtil.getTheme(this))));
     }
 
     private DialogBase.IDialogListener mNewMemoItemDialogListener = new DialogBase.IDialogListener() {
@@ -106,6 +167,8 @@ public class ViewActivity extends AppCompatActivity {
                 int inserted = mAdapter.addItem(item);
                 if(inserted >= 0) {
                     mAdapter.notifyItemInserted(inserted);
+
+                    requestEditTextFocus();
                 }else {
                     Snackbar snack = Snackbar.make(btnView, "Memo item add failed", Snackbar.LENGTH_SHORT);
                     snack.show();
@@ -217,6 +280,15 @@ public class ViewActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
+    private Handler mHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what == MSG_FOCUS_EDITTEXT) {
+                setFocusLastEditText();
+            }
+        }
+    };
 
     private View.OnClickListener mButtonListener = new View.OnClickListener() {
         @Override
