@@ -5,10 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false">
-    <TextView
+
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="MemoListFragment!!"
-        />
+        android:id="@+id/listViewMemoList"
+        android:divider="#ffffff"
+        android:dividerHeight="1dp"
+        android:choiceMode="singleChoice"
+        android:listSelector="@color/colorAccent"/>
+
 </android.support.design.widget.CoordinatorLayout>
