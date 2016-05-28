@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:match="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#ff000000"
+    tools:context="c.m.mobile8.LogoActivity">
+
+    <com.roger.match.library.MatchTextView
+        android:id="@+id/matchTextViewMain"
+        match:text="MIDAS"
+        match:textSize="25sp"
+        match:textColor="#ffffff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        />
+    <com.roger.match.library.MatchTextView
+        android:id="@+id/matchTextViewSub"
+        match:text="CHALLENGE"
+        match:textSize="10sp"
+        match:textColor="#ffffff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/matchTextViewMain"
+        />
+
+</RelativeLayout>
