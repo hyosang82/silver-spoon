@@ -17,7 +17,8 @@
             android:layout_alignParentEnd="false"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textSize="12sp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -29,7 +30,8 @@
             android:singleLine="true"
             android:layout_centerVertical="true"
             android:layout_margin="5dp"
-            android:layout_below="@+id/textViewUpdateDate" />
+            android:layout_below="@+id/textViewUpdateDate"
+            android:textSize="20sp" />
 
     </RelativeLayout>
 </RelativeLayout>
