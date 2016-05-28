@@ -122,13 +122,10 @@ public class DBManager {
     public List<Memo> getMemoList() {
         return getMemoList(false);
     }
+
     public List<Memo> getMemoList(boolean isOrderUpdateDate) {
-        Map<Integer, Memo> tmpResult = new HashMap<Integer, Memo>();
-        List<Memo> result;
+        List<Memo> result = new ArrayList<Memo>();
         String query = "";
-        query = "SELECT id,created_date, update_date, theme, sequence, content, content_type " +
-                "FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id" +
-                " ORDER BY sequence asc;";
         SQLiteDatabase sqlDB = null;
         if(MConstants.isDEBUG)
             Log.i(TAG, "getMemoList() start");
@@ -136,6 +133,15 @@ public class DBManager {
             sqlDB = dbHelper.openReadOnlyDataBase();
             Cursor cursor = null;
             try {
+                if(isOrderUpdateDate) {
+                    query = "SELECT id,created_date, update_date, theme " +
+                            "FROM memo_tbl" +
+                            "ORDER BY update_date desc;";
+                } else {
+                    query = "SELECT id,created_date, update_date, theme " +
+                            "FROM memo_tbl" +
+                            "ORDER BY created_date desc;";
+                }
                 cursor = sqlDB.rawQuery(query, null);
                 if (cursor.moveToFirst()) {
                     if (cursor != null && cursor.getCount() > 0) {
@@ -147,15 +153,8 @@ public class DBManager {
                             long created_date = cursor.getLong(1);
                             long update_date = cursor.getLong(2);
                             int theme= cursor.getInt(3);
-                            if(tmpResult.get(memoId) == null) {
-                                memo = new Memo(memoId, created_date, update_date, theme);
-                                tmpResult.put(memoId, memo);
-                            }
-                            //memo contents value
-                            int sequence = cursor.getInt(4);
-                            String content = cursor.getString(5);
-                            ContentType contentType = ContentType.values()[cursor.getInt(6)];
-                            tmpResult.get(memoId).addMemoContent(new MemoContent(sequence, memoId, content, contentType));
+                            memo = new Memo(memoId, created_date, update_date, theme);
+                            result.add(memo);
                         }
                     }
                 }
@@ -164,6 +163,46 @@ public class DBManager {
             } finally {
                 if (cursor != null) {
                     cursor.close();
+                }
+            }
+            Iterator<Memo> iter = result.iterator();
+            while(iter.hasNext()) {
+                Memo memo = iter.next();
+                try {
+                    if(isOrderUpdateDate) {
+                        query = "SELECT sequence, memo_id, content, content_type " +
+                                "FROM memo_content_tbl " +
+                                "WHERE memo_id = " + memo.getId() +
+                                "ORDER BY sequence asc;";
+                    } else {
+                        query = "SELECT sequence, memo_id, content, content_type " +
+                                "FROM memo_content_tbl " +
+                                "WHERE memo_id = " + memo.getId() +
+                                "ORDER BY sequence asc;";
+                    }
+                    cursor = sqlDB.rawQuery(query, null);
+                    if (cursor.moveToFirst()) {
+                        if (cursor != null && cursor.getCount() > 0) {
+                            cursor.moveToPosition(-1);
+                            MemoContent memoContent = null;
+                            while (cursor.moveToNext()) {
+                                // memo value
+                                int sequence = cursor.getInt(0);
+                                int memo_id = cursor.getInt(1);
+                                String content = cursor.getString(2);
+                                int content_type = cursor.getInt(3);
+                                ContentType contentType = ContentType.values()[content_type];
+                                memoContent = new MemoContent(sequence, memo_id, content, contentType);
+                                memo.addMemoContent(memoContent);
+                            }
+                        }
+                    }
+                } catch (SQLiteException ex) {
+                    ex.printStackTrace();
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
                 }
             }
         } catch (SQLiteException ex) {
@@ -175,14 +214,6 @@ public class DBManager {
             if(MConstants.isDEBUG)
                 Log.i(TAG, "getMemoList() end");
         }
-        if(isOrderUpdateDate) {
-            //TODO : order by update date
-
-        } else {
-            //TODO : order by created date
-
-        }
-        result = new ArrayList<Memo>(tmpResult.values());
         return result;
     }
 

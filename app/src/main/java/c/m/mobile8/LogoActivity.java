@@ -29,7 +29,8 @@ public class LogoActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-        new CountDownTimer(4000, 2500) {
+//        new CountDownTimer(4000, 2500) {
+        new CountDownTimer(500, 250) {
             public void onTick(long millisUntilFinished) {
             }
 
