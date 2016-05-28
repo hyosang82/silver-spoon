@@ -72,13 +72,13 @@ public class MemoListFragment extends Fragment {
                     searchMemoList = DBManager.getInstance(getActivity()).searchMemo(editTextSearch.getText().toString());
                     if(searchMemoList.size() == 0) textViewNoSearch.setText("일치하는 결과가 없습니다.");
                     else textViewNoSearch.setText("");
-                    listViewMemoList.setVisibility(View.GONE);
+                    listViewMemoList.setVisibility(View.INVISIBLE);
                     listVIewSearchList.setVisibility(View.VISIBLE);
                     listVIewSearchList.setAdapter(new MemoListViewAdapter(getActivity().getApplicationContext(), searchMemoList));
                 } else {
                     textViewNoSearch.setText("");
                     listViewMemoList.setVisibility(View.VISIBLE);
-                    listVIewSearchList.setVisibility(View.GONE);
+                    listVIewSearchList.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -145,7 +145,7 @@ public class MemoListFragment extends Fragment {
             memoListViewAdapter.setMemoList(memoList);
             memoListViewAdapter.notifyDataSetChanged();
         }
-        if(listVIewSearchList != null) listVIewSearchList.setVisibility(View.GONE);
+        if(listVIewSearchList != null) listVIewSearchList.setVisibility(View.INVISIBLE);
     }
 
     private void setKeyboard(boolean toggle) {
