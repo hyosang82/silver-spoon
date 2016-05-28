@@ -13,7 +13,7 @@
 
     <com.roger.match.library.MatchTextView
         android:id="@+id/matchTextViewMain"
-        match:text="MIDAS"
+        match:text="MEMO"
         match:textSize="25sp"
         match:textColor="#ffffff"
         android:layout_width="wrap_content"
@@ -22,7 +22,7 @@
         />
     <com.roger.match.library.MatchTextView
         android:id="@+id/matchTextViewSub"
-        match:text="MEMO"
+        match:text="MIDAS"
         match:textSize="10sp"
         match:textColor="#ffffff"
         android:layout_width="wrap_content"
