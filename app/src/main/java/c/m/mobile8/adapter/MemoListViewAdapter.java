@@ -71,6 +71,7 @@ public class MemoListViewAdapter extends BaseAdapter {
             MemoContent memoContent = iter.next();
             if(memoContent.getContentType() == ContentType.CONTENT_TYPE_TEXT) {
                 content += memoContent.getContent();
+
             } else if(memoContent.getContentType() == ContentType.CONTENT_TYPE_IMAGE) {
                 content += " (사진) ";
             } else if(memoContent.getContentType() == ContentType.CONTENT_TYPE_AUDIO) {
