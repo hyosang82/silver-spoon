@@ -14,6 +14,8 @@ import c.m.mobile8.models.MemoContent;
  */
 public class MemoTextViewHolder extends ViewHolderBase{
     public EditText mEditText;
+    public static boolean bUpdated = false;
+
     public MemoTextViewHolder(View itemView) {
         super(itemView);
 
@@ -31,10 +33,14 @@ public class MemoTextViewHolder extends ViewHolderBase{
         Object tag = mEditText.getTag();
         if(tag != null) {
             if(tag instanceof MemoContent) {
-                MemoContent memo = (MemoContent) tag;
-                memo.setContent(mEditText.getText().toString());
+                String txt = mEditText.getText().toString();
 
-                Log.d("TEST", "Stored :: " + memo.getContent());
+                MemoContent memo = (MemoContent) tag;
+
+                if(!txt.equals(memo.getContent())) {
+                    memo.setContent(txt);
+                    bUpdated = true;
+                }
             }
         }
     }

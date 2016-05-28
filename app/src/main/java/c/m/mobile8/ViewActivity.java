@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import c.m.mobile8.adapter.MemoDetailAdapter;
+import c.m.mobile8.adapter.MemoTextViewHolder;
 import c.m.mobile8.dialog.DialogBase;
 import c.m.mobile8.dialog.NewMemoItemDialog;
 import c.m.mobile8.models.Memo;
@@ -35,6 +36,7 @@ public class ViewActivity extends AppCompatActivity {
 
     private RecyclerView mMemoView;
     private MemoDetailAdapter mAdapter;
+    private boolean mbUpdated = false;
 
 
     @Override
@@ -140,10 +142,14 @@ public class ViewActivity extends AppCompatActivity {
             if(v instanceof EditText) {
                 Object tag = v.getTag();
                 if(tag instanceof MemoContent) {
-                    MemoContent memo = (MemoContent) tag;
-                    memo.setContent(((EditText) v).getText().toString());
+                    String txt = ((EditText) v).getText().toString();
 
-                    Log.d("TEST", "UPDATED :::: " + memo.getContent());
+                    MemoContent memo = (MemoContent) tag;
+
+                    if(!txt.equals(memo.getContent())) {
+                        memo.setContent(txt);
+                        mbUpdated = true;
+                    }
                 }
             }
         }
@@ -151,14 +157,21 @@ public class ViewActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //cancel
-        (new AlertDialog.Builder(ViewActivity.this)).setMessage("작성한 내용이 삭제됩니다.")
-                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                }).create().show();
+        updateDataRecursive(mMemoView);
+        mbUpdated |= MemoTextViewHolder.bUpdated;
+
+        if(mbUpdated) {
+            //cancel
+            (new AlertDialog.Builder(ViewActivity.this)).setMessage("작성한 내용이 삭제됩니다.")
+                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    }).create().show();
+        }else {
+            super.onBackPressed();
+        }
     }
 
     private View.OnClickListener mButtonListener = new View.OnClickListener() {
