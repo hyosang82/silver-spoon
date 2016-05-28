@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private ConfigFragment mConfigFragment = new ConfigFragment();
 
     private Menu mMenu;
+    private boolean mMenuInit = true;
     FloatingActionButton mFab;
 
 
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         mFab.setBackgroundTintList(ColorStateList.valueOf(ThemeUtil.getSystemColor(this, ThemeUtil.getTheme(this))));
         mFab.setImageResource(R.drawable.icon_fab_plus);
         setActionBarColor(ThemeUtil.getTheme(this));
+
     }
 
     @Override
@@ -122,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         mMenu = menu;
         inflater.inflate(R.menu.menu_main, mMenu);
+
         return true;
     }
 
@@ -152,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         //TODO : switch fragment to calendar
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.activity_main_fragments, mMemoCalendarFragment).commit();
-        mMenu.getItem(0).setIcon(getResources().getDrawable(android.R.drawable.ic_menu_agenda));
+        mMenu.getItem(0).setIcon(getResources().getDrawable(R.drawable.icon_list));
         mCurrentState = STATE_CALENDAR;
 
     }
@@ -160,14 +163,14 @@ public class MainActivity extends AppCompatActivity {
         //TODO : switch fragment to list
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.activity_main_fragments, mMemoListFragment).commit();
-        mMenu.getItem(0).setIcon(getResources().getDrawable(android.R.drawable.ic_menu_my_calendar));
+        mMenu.getItem(0).setIcon(getResources().getDrawable(R.drawable.icon_calendar));
         mCurrentState = STATE_LIST;
 
     }
     public void switchFragmentDefaultToConfig() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.activity_main_fragments, mConfigFragment).commit();
-        mMenu.getItem(1).setIcon(getResources().getDrawable(android.R.drawable.ic_menu_close_clear_cancel));
+        mMenu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_x));
         mMenu.getItem(0).setVisible(false);
         mIsConfigFragment = true;
         mFab.hide();
@@ -181,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                 switchFragmentListToCalendar();
                 break;
         }
-        mMenu.getItem(1).setIcon(getResources().getDrawable(android.R.drawable.ic_menu_preferences));
+        mMenu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_setting));
         mMenu.getItem(0).setVisible(true);
         mIsConfigFragment = false;
         mFab.show();

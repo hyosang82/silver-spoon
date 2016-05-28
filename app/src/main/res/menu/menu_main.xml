@@ -6,13 +6,13 @@
         android:id="@+id/action_list_calendar_changer"
         android:orderInCategory="100"
         android:title="@string/action_settings"
-        android:icon="@android:drawable/ic_menu_my_calendar"
+        android:icon="@drawable/icon_calendar"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_list_config"
         android:orderInCategory="200"
         android:title="@string/action_settings"
-        android:icon="@android:drawable/ic_menu_preferences"
+        android:icon="@drawable/icon_setting"
         app:showAsAction="always" />
 
 </menu>
