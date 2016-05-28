@@ -112,8 +112,33 @@ public class ViewActivity extends AppCompatActivity {
             Memo memo = DBManager.getInstance(this).getMemoById(mMemoId);
             mAdapter.setData(memo);
             mAdapter.notifyDataSetChanged();
+
+            String title = getMemoTitle();
+            if(title != null) {
+                getSupportActionBar().setTitle(title);
+            }
         }
     }
+
+    private String getMemoTitle() {
+        for(MemoContent memo : mAdapter.getAllList()) {
+            if(memo.getContentType() == ContentType.CONTENT_TYPE_TEXT) {
+                int idx = 10;
+                String cont = memo.getContent();
+                if(cont.length() > 10) {
+                    idx = cont.indexOf(' ', idx);
+                    if(idx > 20) idx = 10;
+
+                    return cont.substring(0, idx);
+                }else {
+                    return cont;
+                }
+            }
+        }
+
+        return null;
+    }
+
 
     private void requestEditTextFocus() {
         mHandler.sendEmptyMessageDelayed(MSG_FOCUS_EDITTEXT, 500);
