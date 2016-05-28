@@ -357,9 +357,7 @@ public class DBManager {
     //TODO: searchMemo
     public List<Memo> searchMemo(String word) {
         List<Memo> result = new ArrayList<Memo>();
-        String query = "SELECT id,created_date, update_date, theme, sequence, content, content_type " +
-                "FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id " +
-                "WHERE memo_content_tbl.content LIKE '%"+word+"%' AND memo_content_tbl.content_type=0;";
+        String query = "";
         SQLiteDatabase sqlDB = null;
         if(MConstants.isDEBUG)
             Log.i(TAG, "searchMemo() start");
@@ -367,29 +365,26 @@ public class DBManager {
             sqlDB = dbHelper.openReadOnlyDataBase();
             Cursor cursor = null;
             try {
+                query = "SELECT id, created_date, update_date, theme " +
+                        "FROM memo_tbl join memo_content_tbl on memo_tbl.id = memo_content_tbl.memo_id " +
+                        "WHERE memo_content_tbl.content LIKE '%"+word+"%' AND memo_content_tbl.content_type=0;";
                 cursor = sqlDB.rawQuery(query, null);
                 if (cursor.moveToFirst()) {
+                    Map<Integer, Memo> tmp = new LinkedHashMap<Integer, Memo>();
                     if (cursor != null && cursor.getCount() > 0) {
                         cursor.moveToPosition(-1);
-                        int currentMemoId = -1;
                         Memo memo = null;
                         while (cursor.moveToNext()) {
                             // memo value
                             int memoId = cursor.getInt(0);
                             long created_date = cursor.getLong(1);
                             long update_date = cursor.getLong(2);
-                            int theme = cursor.getInt(3);
-                            if(currentMemoId == -1 || currentMemoId != memoId) {
-                                memo = new Memo(memoId, created_date, update_date, theme);
+                            int theme= cursor.getInt(3);
+                            memo = new Memo(memoId, created_date, update_date, theme);
+                            if(tmp.get(memoId) == null) {
+                                tmp.put(memoId, memo);
                                 result.add(memo);
-                                currentMemoId = memoId;
                             }
-                            //memo contents value
-                            int sequence = cursor.getInt(4);
-                            String content = cursor.getString(5);
-                            ContentType contentType = ContentType.values()[cursor.getInt(6)];
-                            memo.addMemoContent(new MemoContent(sequence, memoId, content, contentType));
-
                         }
                     }
                 }
@@ -398,6 +393,39 @@ public class DBManager {
             } finally {
                 if (cursor != null) {
                     cursor.close();
+                }
+            }
+            Iterator<Memo> iter = result.iterator();
+            while(iter.hasNext()) {
+                Memo memo = iter.next();
+                try {
+                    query = "SELECT sequence, memo_id, content, content_type " +
+                            "FROM memo_content_tbl " +
+                            "WHERE memo_id = " + memo.getId() +
+                            " ORDER BY sequence asc;";
+                    cursor = sqlDB.rawQuery(query, null);
+                    if (cursor.moveToFirst()) {
+                        if (cursor != null && cursor.getCount() > 0) {
+                            cursor.moveToPosition(-1);
+                            MemoContent memoContent = null;
+                            while (cursor.moveToNext()) {
+                                // memo value
+                                int sequence = cursor.getInt(0);
+                                int memo_id = cursor.getInt(1);
+                                String content = cursor.getString(2);
+                                int content_type = cursor.getInt(3);
+                                ContentType contentType = ContentType.values()[content_type];
+                                memoContent = new MemoContent(sequence, memo_id, content, contentType);
+                                memo.addMemoContent(memoContent);
+                            }
+                        }
+                    }
+                } catch (SQLiteException ex) {
+                    ex.printStackTrace();
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
                 }
             }
         } catch (SQLiteException ex) {
@@ -410,6 +438,7 @@ public class DBManager {
                 Log.i(TAG, "searchMemo() end");
         }
         return result;
+
     }
     //TODO update Content by memo_id and sequence
     public boolean updateContentByMemoIdAndSeq(Memo memo, MemoContent memoContent) {

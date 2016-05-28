@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -62,18 +64,25 @@ public class ConfigFragment extends Fragment implements SettingThemeDialogFragme
             ThemeUtil.MIDAS_THEME currentTheme = ThemeUtil.getTheme(getActivity());
             current_theme.setText(currentTheme.toString().replace("THEME_", "").replace("_", " "));
             current_theme.setBackgroundColor(ThemeUtil.getMainColor(getActivity(), currentTheme));
+            contact_opensource_license = (RelativeLayout) rootView.findViewById(R.id.contact_opensource_license);
+            contact_opensource_license.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    WebView view = (WebView) LayoutInflater.from(getActivity()).inflate(R.layout.dialog_licenses, null);
+                    view.loadUrl("file:///android_asset/opensource_licenses.html");
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(getString(R.string.action_licenses))
+                            .setView(view)
+                            .setPositiveButton(android.R.string.ok, null)
+                            .create().show();
+                }
+            });
         }
 
         TextView current_version;
-        RelativeLayout new_version_info_layout;
-        TextView new_version;
         RelativeLayout contact_theme_setting;
         TextView current_theme;
-        RelativeLayout contact_email_layout;
-        RelativeLayout ad_email_layout;
-        RelativeLayout share_layout;
-        RelativeLayout refreshtime_setting;
-        TextView current_refresh_time;
+        RelativeLayout contact_opensource_license;
     }
 
     @Override
