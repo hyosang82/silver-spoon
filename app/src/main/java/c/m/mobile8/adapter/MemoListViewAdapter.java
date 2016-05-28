@@ -65,10 +65,10 @@ public class MemoListViewAdapter extends BaseAdapter {
         String updateDate = formatter.format ( currentTime );
 
         //CONTENT_TYPE_TEXT
-        Iterator<Integer> iter = memo.getMemoContents().keySet().iterator();
+        Iterator<MemoContent> iter = memo.getMemoContents().iterator();
         String content = "";
         while (iter.hasNext()) {
-            MemoContent memoContent = memo.getMemoContents().get(iter.next());
+            MemoContent memoContent = iter.next();
             if(memoContent.getContentType() == ContentType.CONTENT_TYPE_TEXT) {
                 content += memoContent.getContent();
             } else if(memoContent.getContentType() == ContentType.CONTENT_TYPE_IMAGE) {
