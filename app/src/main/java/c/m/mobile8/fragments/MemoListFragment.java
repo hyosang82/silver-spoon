@@ -1,28 +1,17 @@
 package c.m.mobile8.fragments;
 
-
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-
 import c.m.mobile8.R;
 import c.m.mobile8.ViewActivity;
 import c.m.mobile8.adapter.MemoListViewAdapter;
@@ -43,6 +32,10 @@ public class MemoListFragment extends Fragment {
     MemoListViewAdapter memoListViewAdapter;
     List<Memo> memoList;
 
+
+    boolean isSelectMode = false;
+    boolean[] isSelected;
+
     public MemoListFragment() {
         // Required empty public constructor
     }
@@ -52,6 +45,17 @@ public class MemoListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_memo_list, container, false);
+
+        /*
+        Date date = new Date();
+        Memo memo = new Memo(1, date.getTime(), date.getTime());
+        memo.addMemoContent(new MemoContent(0, 1, "test1", ContentType.CONTENT_TYPE_VIDIO));
+        memo.addMemoContent(new MemoContent(1, 1, "test2", ContentType.CONTENT_TYPE_IMAGE));
+        DBManager.getInstance(getActivity().getApplicationContext()).insertMemo(memo);
+        */
+
+
+
 
         memoList = DBManager.getInstance(getActivity().getApplicationContext()).getMemoList();
         Log.i(TAG, "" + memoList.size());
@@ -64,35 +68,28 @@ public class MemoListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //open memo
-                enterDetailView(memoList.get(position).getId());
+                if(isSelectMode) {
+                    isSelected[position] = !isSelected[position];
+                    memoListViewAdapter.setSelected(isSelected);
+
+                } else {
+                    enterDetailView(memoList.get(position).getId());
+                }
             }
         });
         listViewMemoList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                //memo menu dialog
                 Log.e(TAG, "long click " + position);
-                listViewMemoList.setSelection(position);
-
-
+                if(!isSelectMode) {
+                    isSelectMode = true;
+                    isSelected = new boolean[memoList.size()];
+                    isSelected[position] = true;
+                    memoListViewAdapter.setSelected(isSelected);
+                }
                 return true;
             }
         });
-        /*
-        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
-        if (fab != null) {
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //new memo
-                    Log.e(TAG, "add new memo");
-                    enterDetailView(-1);
-                }
-            });
-        }*/
-
-
-
         return rootView;
     }
 
@@ -101,9 +98,6 @@ public class MemoListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         //TODO
     }
-
-
-
 
     private void enterDetailView(int memoId) {
         Intent i = new Intent(getActivity(), ViewActivity.class);
