@@ -3,6 +3,7 @@ package c.m.mobile8;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Handler;
@@ -79,12 +80,12 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     //new memo
-                    Log.e(TAG, "add new memo");
                     enterDetailView(-1);
                 }
             });
         }
         mFab.setBackgroundTintList(ColorStateList.valueOf(ThemeUtil.getSystemColor(this, ThemeUtil.getTheme(this))));
+        mFab.setImageResource(R.drawable.icon_fab_plus);
         setActionBarColor(ThemeUtil.getTheme(this));
     }
 
