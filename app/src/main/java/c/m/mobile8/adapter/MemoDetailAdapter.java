@@ -9,9 +9,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import c.m.mobile8.R;
 import c.m.mobile8.adapter.MemoTextViewHolder;
+import c.m.mobile8.models.Memo;
 import c.m.mobile8.models.MemoContent;
 
 /**
@@ -84,6 +87,14 @@ public class MemoDetailAdapter extends RecyclerView.Adapter<ViewHolderBase> {
     @Override
     public int getItemCount() {
         return mList.size();
+    }
+
+    public void setData(Memo memo) {
+        Map<Integer, MemoContent> conts = new TreeMap<>(memo.getMemoContents());
+
+        for(Map.Entry<Integer, MemoContent> entry : conts.entrySet()) {
+            mList.add(entry.getValue());
+        }
     }
 
     public List<MemoContent> getAllList() {

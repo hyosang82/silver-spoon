@@ -37,6 +37,7 @@ public class ViewActivity extends AppCompatActivity {
     private RecyclerView mMemoView;
     private MemoDetailAdapter mAdapter;
     private boolean mbUpdated = false;
+    private int mMemoId = -1;
 
 
     @Override
@@ -66,12 +67,16 @@ public class ViewActivity extends AppCompatActivity {
             }
         });
 
-        int memoId = getIntent().getIntExtra(EXTRA_MEMO_ID, -1);
-        if(memoId < 0) {
+        mMemoId = getIntent().getIntExtra(EXTRA_MEMO_ID, -1);
+        if(mMemoId < 0) {
             //new memo
             mAdapter.addItem(new MemoContent(-1, -1, "", ContentType.CONTENT_TYPE_TEXT));
         }else {
             //load
+            Memo memo = DBManager.getInstance(this).getMemoById(mMemoId);
+            mAdapter.setData(memo);
+            mAdapter.notifyDataSetChanged();
+
         }
     }
 
@@ -124,6 +129,12 @@ public class ViewActivity extends AppCompatActivity {
         for(MemoContent m : mAdapter.getAllList()) {
             memo.addMemoContent(m);
         }
+
+        if(mMemoId < 0) {
+            //created
+            memo.setCreatedDate(System.currentTimeMillis());
+        }
+        memo.setUpdateDate(System.currentTimeMillis());
 
         DBManager db = DBManager.getInstance(this);
         db.insertMemo(memo);
