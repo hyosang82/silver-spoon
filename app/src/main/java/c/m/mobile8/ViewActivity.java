@@ -82,8 +82,7 @@ public class ViewActivity extends AppCompatActivity {
         mAdapter.setListener(mMemoListener);
         mMemoView.setAdapter(mAdapter);
 
-        getSupportActionBar().setTitle("View/Edit Memo");
-
+        getSupportActionBar().setTitle("메모 보기");
         findViewById(R.id.btn_cancel).setOnClickListener(mButtonListener);
         findViewById(R.id.btn_save).setOnClickListener(mButtonListener);
 

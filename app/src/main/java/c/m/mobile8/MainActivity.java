@@ -168,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
         if(actionBar != null) actionBar.setTitle("날짜별 메모");
         mMenu.getItem(0).setIcon(getResources().getDrawable(R.drawable.icon_list));
         mCurrentState = STATE_CALENDAR;
+
     }
     public void switchFragmentCalendarToList() {
         //TODO : switch fragment to list
@@ -176,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
         if(actionBar != null) actionBar.setTitle("메모 목록");
         mMenu.getItem(0).setIcon(getResources().getDrawable(R.drawable.icon_calendar));
         mCurrentState = STATE_LIST;
+
     }
     public void switchFragmentDefaultToConfig() {
         FragmentManager fragmentManager = getSupportFragmentManager();

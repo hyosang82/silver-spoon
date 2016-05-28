@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,7 +86,7 @@ public class MemoListViewAdapter extends BaseAdapter {
                 isContainFile[2] = true;
             }
         }
-        //holder.imageViewMemoTheme.setBackgroundColor(ThemeUtil.getMainColor(context, memo.getTheme());
+        holder.imageViewMemoTheme.setBackgroundColor(ThemeUtil.getSystemColor(context, ThemeUtil.MIDAS_THEME.values()[memo.getTheme()]));
         holder.textViewUpdateDate.setText(updateDate);
         if(!content.equals("")) holder.textViewMemoTitle.setText(content);
         else holder.textViewMemoTitle.setText("(텍스트 없음)");

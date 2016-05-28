@@ -1,6 +1,7 @@
 package c.m.mobile8;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -142,8 +143,14 @@ public class FullImageActivity extends Activity {
     private int getSampleSize(int imgWidth, int imgHeight) {
         //디스플레이의 가로세로 두배 크기로 로드한다.
         DisplayMetrics metrics = getResources().getDisplayMetrics();
-        int dw = metrics.widthPixels * 2;
-        int dh = metrics.heightPixels * 2;
+        int dw, dh;
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            dw = metrics.widthPixels * 2;
+            dh = metrics.heightPixels * 2;
+        }else {
+            dh = metrics.widthPixels * 2;
+            dw = metrics.heightPixels * 2;
+        }
 
         int sampleSize = 1;
 
