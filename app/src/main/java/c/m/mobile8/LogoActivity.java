@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.roger.match.library.MatchTextView;
 
+import c.m.mobile8.utils.DBManager;
+
 public class LogoActivity extends AppCompatActivity {
     private MatchTextView mMatchTextViewMain;
     private MatchTextView mMatchTextViewSub;
@@ -19,6 +21,7 @@ public class LogoActivity extends AppCompatActivity {
         mMatchTextViewSub = (MatchTextView)findViewById(R.id.matchTextViewSub);
         mMatchTextViewMain.setInTime(0.7f);
         mMatchTextViewMain.setOutTime(0.7f);
+        initDataBase();
 
         mMatchTextViewSub.setLight(false);
     }
@@ -44,10 +47,16 @@ public class LogoActivity extends AppCompatActivity {
         }.start();
     }
 
+
+
     @Override
     public void onBackPressed() {
         isFinishApp = true;
         super.onBackPressed();
     }
 
+    public void initDataBase() {
+        DBManager dbManager = DBManager.getInstance(this);
+        dbManager.CreateDataBase();
+    }
 }

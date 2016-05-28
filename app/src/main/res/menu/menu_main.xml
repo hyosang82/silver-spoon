@@ -8,4 +8,11 @@
         android:title="@string/action_settings"
         android:icon="@android:drawable/ic_menu_my_calendar"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_list_config"
+        android:orderInCategory="50"
+        android:title="@string/action_settings"
+        android:icon="@android:drawable/ic_menu_preferences"
+        app:showAsAction="always" />
+
 </menu>

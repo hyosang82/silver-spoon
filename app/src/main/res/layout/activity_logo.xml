@@ -22,7 +22,7 @@
         />
     <com.roger.match.library.MatchTextView
         android:id="@+id/matchTextViewSub"
-        match:text="CHALLENGE"
+        match:text="MEMO"
         match:textSize="10sp"
         match:textColor="#ffffff"
         android:layout_width="wrap_content"

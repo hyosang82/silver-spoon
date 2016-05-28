@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:layout_width="250dp"
+    android:layout_height="400dp"
+    android:layout_gravity="center|top"
+    android:orientation="vertical">
+
+    <ListView
+        android:id="@+id/listview_theme"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:background="@android:color/white"
+        android:divider="#fff4f4f4"
+        android:dividerHeight="0.1dp"
+        android:fastScrollEnabled="false"
+        android:scrollbars="none"></ListView>
+
+    <Button
+        android:id="@+id/button_cancel"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/cancel_button_background"
+        android:layout_weight="0.5"
+        android:textColor="#FF000000"
+        android:text="취소" />
+</LinearLayout>

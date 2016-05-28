@@ -2,6 +2,8 @@ package c.m.mobile8;
 
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
@@ -24,18 +26,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import c.m.mobile8.fragments.ConfigFragment;
 import c.m.mobile8.fragments.MemoCalendarFragment;
 import c.m.mobile8.fragments.MemoListFragment;
 import c.m.mobile8.models.Memo;
 import c.m.mobile8.models.MemoContent;
 import c.m.mobile8.models.enums.ContentType;
 import c.m.mobile8.utils.DBManager;
+import c.m.mobile8.utils.ThemeUtil;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
     private final int STATE_LIST = 0;
     private final int STATE_CALENDAR = 1;
     private int mCurrentState = STATE_LIST;
+
+    private boolean mIsConfigFragment = false;
+
     //Back Key
     private static final int BACKKEY_TIMEOUT = 2;
     private static final int MILLIS_IN_SEC = 1000;
@@ -47,22 +54,19 @@ public class MainActivity extends AppCompatActivity {
 
     private MemoCalendarFragment mMemoCalendarFragment = new MemoCalendarFragment();
     private MemoListFragment mMemoListFragment = new MemoListFragment();
+    private ConfigFragment mConfigFragment = new ConfigFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mCoordinatorLayout = (CoordinatorLayout)findViewById(R.id.coordinatorLayout);
-        initDataBase();
         initActionBar();
         mMemoList = DBManager.getInstance(this).getMemoList();
-//        Intent i = new Intent(this, MemoListActivity.class);
-//        startActivity(i);
-//        finish();
         //init memo list fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.activity_main_fragments, mMemoListFragment).commit();
-        //testCode();
+        //dbtestCode();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if (fab != null) {
@@ -75,6 +79,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+        setActionBarColor(ThemeUtil.getTheme(this));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private void enterDetailView(int memoId) {
@@ -83,10 +93,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    public void initDataBase() {
-        DBManager dbManager = DBManager.getInstance(this);
-        dbManager.CreateDataBase();
-    }
 
     public void initActionBar() {
     }
@@ -113,6 +119,15 @@ public class MainActivity extends AppCompatActivity {
                     switchFragmentCalendarToList();
                 }
                 break;
+            case R.id.action_list_config:
+                if(mIsConfigFragment) {
+                    item.setIcon(android.R.drawable.ic_menu_preferences);
+                    switchFragmentConfigToDefault();
+                } else {
+                    item.setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+                    switchFragmentDefaultToConfig();
+                }
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -130,7 +145,24 @@ public class MainActivity extends AppCompatActivity {
 
         mCurrentState = STATE_LIST;
     }
-    public void testCode() {
+    public void switchFragmentDefaultToConfig() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.activity_main_fragments, mConfigFragment).commit();
+
+        mIsConfigFragment = true;
+    }
+    public void switchFragmentConfigToDefault() {
+        switch(mCurrentState) {
+            case STATE_LIST:
+                switchFragmentCalendarToList();
+                break;
+            case STATE_CALENDAR:
+                switchFragmentListToCalendar();
+                break;
+        }
+        mIsConfigFragment = false;
+    }
+    public void dbtestCode() {
         Date date = new Date();
         Memo memo = new Memo(-1, date.getTime(), date.getTime());
         memo.addMemoContent(new MemoContent(0, -1, "test1", ContentType.CONTENT_TYPE_TEXT));
@@ -149,7 +181,9 @@ public class MainActivity extends AppCompatActivity {
     //implements Back key pressed
     @Override
     public void onBackPressed() {
-        if(mCurrentState == STATE_CALENDAR) {
+        if(mIsConfigFragment) {
+            switchFragmentConfigToDefault();
+        } else if(mCurrentState == STATE_CALENDAR) {
             switchFragmentCalendarToList();
         } else {
             exitApp();
@@ -192,4 +226,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+    public void setActionBarColor(ThemeUtil.MIDAS_THEME midasTheme) {
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ThemeUtil.getMainColor(this, midasTheme)));
+        getSupportActionBar().setStackedBackgroundDrawable(new ColorDrawable(ThemeUtil.getMainColor(this, midasTheme)));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(ThemeUtil.getMainColor(this, midasTheme));
+            getWindow().setStatusBarColor(ThemeUtil.getSystemColor(this, midasTheme));
+        }
+    }
+
 }
