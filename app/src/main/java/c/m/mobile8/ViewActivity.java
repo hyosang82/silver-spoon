@@ -58,6 +58,7 @@ public class ViewActivity extends AppCompatActivity {
 
         //init
         ImageDecoder.getInstance().setContext(this);
+        MemoTextViewHolder.bUpdated = false;
 
         CoordinatorLayout mainLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
         mMemoView = (RecyclerView) findViewById(R.id.memo_view);
@@ -164,7 +165,12 @@ public class ViewActivity extends AppCompatActivity {
         memo.setUpdateDate(System.currentTimeMillis());
 
         DBManager db = DBManager.getInstance(this);
-        db.insertMemo(memo);
+
+        if(mMemoId < 0) {
+            db.insertMemo(memo);
+        }else {
+            db.updateMemo(memo);
+        }
 
         finish();
     }

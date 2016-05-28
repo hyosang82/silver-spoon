@@ -95,6 +95,7 @@ public class ImageDecoder extends Thread {
                 DecoderInfo info = mQueue.take();
                 Bitmap bitmap = mBitmapCache.get(info.location);
 
+
                 if(bitmap == null) {
                     InputStream is = getInputStream(info.location);
 
@@ -117,6 +118,8 @@ public class ImageDecoder extends Thread {
                     bitmap = info.bitmap = BitmapFactory.decodeStream(is, null, opt);
 
                     mBitmapCache.put(info.location, bitmap);
+                }else {
+                    info.bitmap = bitmap;
                 }
 
                 Message.obtain(mHandler, MSG_SET_BITMAP, info).sendToTarget();
