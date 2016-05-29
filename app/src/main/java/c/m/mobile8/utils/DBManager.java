@@ -231,6 +231,7 @@ public class DBManager {
             ContentValues updateValues = new ContentValues();
 
             updateValues.put("update_date", memo.getUpdateDate());
+            updateValues.put("theme", memo.getTheme());
             String[] whereArgs = { "" + memo.getId() };
 
             sqlDB.update("memo_tbl", updateValues, "id=?",

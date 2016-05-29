@@ -119,6 +119,7 @@ public class ViewActivity extends AppCompatActivity implements SettingThemeDialo
         }else {
             //load
             Memo memo = DBManager.getInstance(this).getMemoById(mMemoId);
+            theme = ThemeUtil.MIDAS_THEME.values()[memo.getTheme()];
             mAdapter.setData(memo.getMemoContents());
             mAdapter.notifyDataSetChanged();
 
@@ -162,7 +163,7 @@ public class ViewActivity extends AppCompatActivity implements SettingThemeDialo
                 if (prev != null) {
                     tr.remove(prev);
                 }
-                SettingThemeDialogFragment dialog = new SettingThemeDialogFragment(this);
+                SettingThemeDialogFragment dialog = new SettingThemeDialogFragment(this, true, theme);
                 dialog.show(tr, "SettingThemeDialogFragment");
                 break;
         }
