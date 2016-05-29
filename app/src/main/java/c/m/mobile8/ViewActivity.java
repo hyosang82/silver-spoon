@@ -108,12 +108,12 @@ public class ViewActivity extends AppCompatActivity implements SettingThemeDialo
         });
 
         mBtnAdd.setBackgroundTintList(ColorStateList.valueOf(ThemeUtil.getSystemColor(this, ThemeUtil.getTheme(this))));
-        setActionBarColor(ThemeUtil.getTheme(this));
 
         mMemoId = getIntent().getIntExtra(EXTRA_MEMO_ID, -1);
         if(mMemoId < 0) {
             //new memo
             mAdapter.addItem(new MemoContent(-1, -1, "", ContentType.CONTENT_TYPE_TEXT));
+            setActionBarColor(ThemeUtil.getTheme(this));
 
             requestEditTextFocus();
         }else {
@@ -122,6 +122,7 @@ public class ViewActivity extends AppCompatActivity implements SettingThemeDialo
             theme = ThemeUtil.MIDAS_THEME.values()[memo.getTheme()];
             mAdapter.setData(memo.getMemoContents());
             mAdapter.notifyDataSetChanged();
+            setActionBarColor(theme);
 
             String title = getMemoTitle();
             if(title != null) {
@@ -383,6 +384,7 @@ public class ViewActivity extends AppCompatActivity implements SettingThemeDialo
     @Override
     public void onClickTheme(ThemeUtil.MIDAS_THEME busTheme) {
         theme = busTheme;
+        setActionBarColor(theme);
     }
 
     private class SaveTask extends AsyncTask<Void, Void, Boolean> {
