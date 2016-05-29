@@ -42,6 +42,7 @@ import c.m.mobile8.utils.ThemeUtil;
 public class MemoCalendarFragment extends Fragment {
     private CompactCalendarView mCalendar;
     private TextView mTextView;
+    private ListView mListView;
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMM - yyyy", Locale.getDefault());
     private MemoListViewAdapter mMemoListViewAdapter;
 
@@ -57,11 +58,21 @@ public class MemoCalendarFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_memo_calendar, container, false);
 
         mCalendar = (CompactCalendarView) rootView.findViewById(R.id.calendar_view);
-        ListView listView = (ListView)rootView.findViewById(R.id.calendar_listview);
+        mListView = (ListView)rootView.findViewById(R.id.calendar_listview);
+        mTextView = (TextView) rootView.findViewById(R.id.calendar_month_textview);
 
+
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         if(mMemoListViewAdapter == null) {
             mMemoListViewAdapter = new MemoListViewAdapter(getActivity(), new ArrayList<Memo>());
         }
+        mCalendar.removeAllEvents();
+        mCalendar.setCurrentDate(new Date());
         List<Memo> memoList = ((MainActivity)getActivity()).mMemoList;
         Iterator<Memo> iter = memoList.iterator();
         while(iter.hasNext()) {
@@ -80,15 +91,15 @@ public class MemoCalendarFragment extends Fragment {
                 mMemoListViewAdapter.setMemoList(memoList);
             mMemoListViewAdapter.notifyDataSetChanged();
         }
-        listView.setAdapter(mMemoListViewAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setAdapter(mMemoListViewAdapter);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 List<Memo> memoList = ((MainActivity)getActivity()).mMemoList;
                 enterDetailView(memoList.get(position).getId());
             }
         });
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
@@ -114,9 +125,9 @@ public class MemoCalendarFragment extends Fragment {
             }
         });
         mMemoListViewAdapter.notifyDataSetChanged();
-        mTextView = (TextView) rootView.findViewById(R.id.calendar_month_textview);
+
         initCalendar();
-        return rootView;
+
     }
 
     public void initCalendar() {
